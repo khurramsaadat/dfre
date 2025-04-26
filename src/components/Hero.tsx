@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import FeatureCard from './FeatureCard';
 
-const Hero = () => {
+interface HeroProps {
+  hideButtons?: boolean;
+}
+
+const Hero = ({ hideButtons = false }: HeroProps) => {
   const features = [
     {
       title: "Dubai Municipality - 6 Assets",
@@ -33,15 +37,17 @@ const Hero = () => {
   return (
     <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-20">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6">
-            Welcome to Your Next.js Website
-          </h1>
-          <p className="text-xl mb-8">
-            A modern, responsive website built with Next.js and Tailwind CSS.
-            Start building something amazing today.
-          </p>
-        </div>
+        {!hideButtons && (
+          <div className="text-center mb-16">
+            <h1 className="text-5xl font-bold mb-6">
+              Welcome to Your Next.js Website
+            </h1>
+            <p className="text-xl mb-8">
+              A modern, responsive website built with Next.js and Tailwind CSS.
+              Start building something amazing today.
+            </p>
+          </div>
+        )}
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (

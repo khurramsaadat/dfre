@@ -53,39 +53,10 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Corrected the component import in DM6Assets page to properly display the layout.
+- Fixed type error in Hero component by adding proper TypeScript interface for hideButtons prop.
 
 ### Added
 - Added Netlify deployment configuration with netlify.toml
 
 ### Current Folder Structure
 ```
-├── .next/
-├── .git/
-├── .cursor/
-├── node_modules/
-├── public/
-├── src/
-│   ├── app/
-│   │   ├── dm6assets/
-│   │   ├── DMBoxLayout-test/
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   └── components/
-│       ├── DM6AssetsHeroLayout.tsx
-│       ├── DMBoxLayout.tsx
-│       ├── FeatureCard.tsx
-│       ├── Footer.tsx
-│       ├── Header.tsx
-│       └── Hero.tsx
-├── CHANGELOG.md
-├── DM 6 boxes.html
-├── .gitignore
-├── next-env.d.ts
-├── netlify.toml
-├── package-lock.json
-├── package.json
-├── postcss.config.js
-├── tailwind.config.js
-└── tsconfig.json
-``` 
