@@ -76,9 +76,11 @@ All notable changes to this project will be documented in this file.
 - Corrected the component import in DM6Assets page to properly display the layout.
 - Fixed type error in Hero component by adding proper TypeScript interface for hideButtons prop.
 - Fixed text centering in DM6AssetsHeroLayout boxes
+- Configured Git to handle line endings consistently across different operating systems
 
 ### Added
 - Added Netlify deployment configuration with netlify.toml
+- Added .gitattributes file for consistent line ending handling
 
 ### Current Folder Structure
 ```
