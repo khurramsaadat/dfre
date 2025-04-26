@@ -60,3 +60,38 @@ All notable changes to this project will be documented in this file.
 
 ### Current Folder Structure
 ```
+├── .next/
+├── .git/
+├── .cursor/
+├── node_modules/
+├── public/
+│   └── images/
+│       ├── 6-assets.png
+│       └── DS-layout.png
+├── src/
+│   ├── app/
+│   │   ├── dm6assets/
+│   │   │   └── page.tsx
+│   │   ├── DMBoxLayout-test/
+│   │   │   └── page.tsx
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   └── components/
+│       ├── DM6AssetsHeroLayout.tsx
+│       ├── DMBoxLayout.tsx
+│       ├── FeatureCard.tsx
+│       ├── Footer.tsx
+│       ├── Header.tsx
+│       └── Hero.tsx
+├── CHANGELOG.md
+├── DM 6 boxes.html
+├── .gitignore
+├── next-env.d.ts
+├── netlify.toml
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+└── tsconfig.json
+```
