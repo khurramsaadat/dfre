@@ -54,6 +54,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Corrected the component import in DM6Assets page to properly display the layout.
 
+### Added
+- Added Netlify deployment configuration with netlify.toml
+
 ### Current Folder Structure
 ```
 ├── .next/
@@ -79,6 +82,7 @@ All notable changes to this project will be documented in this file.
 ├── DM 6 boxes.html
 ├── .gitignore
 ├── next-env.d.ts
+├── netlify.toml
 ├── package-lock.json
 ├── package.json
 ├── postcss.config.js
