@@ -50,6 +50,14 @@ All notable changes to this project will be documented in this file.
 - Updated the navigation for the first card on the home page to take the user to the DM6Assets page.
 - Removed the unused page at `/dubai-municipality-6-assets`.
 - Updated DM6Assets page to use DM6AssetsHeroLayout component for proper layout display.
+- Updated Header and Footer components to use dark background color rgb(9,36,57).
+- Improved text contrast in Header and Footer for better readability.
+- Enhanced DM6AssetsHeroLayout:
+  - Added white border around background in captured image
+  - Moved date under input text
+  - Improved control visibility during capture
+  - Removed character limit for input text
+  - Updated captured image filename to prefix with 'DM Approval_'
 
 ### Fixed
 - Corrected the component import in DM6Assets page to properly display the layout.

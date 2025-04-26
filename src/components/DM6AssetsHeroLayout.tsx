@@ -99,11 +99,18 @@ export default function DM6AssetsHeroLayout() {
   // Capture functionality
   const handleCaptureImage = async () => {
     if (layoutRef.current) {
-      // Hide borders for capture
+      // Hide controls and add white border for capture
+      const controlsOverlay = layoutRef.current.querySelector('.controls-overlay');
       const boxEls = layoutRef.current.querySelectorAll('.box-border');
+      
+      if (controlsOverlay) {
+        (controlsOverlay as HTMLElement).style.display = 'none';
+      }
+      
       boxEls.forEach((box: Element) => {
         (box as HTMLElement).style.border = 'none';
       });
+
       try {
         const html2canvas = (await import('html2canvas')).default;
         const canvas = await html2canvas(layoutRef.current, {
@@ -124,16 +131,23 @@ export default function DM6AssetsHeroLayout() {
               clonedElement.style.transform = 'none';
               clonedElement.style.width = layoutWidth + 'px';
               clonedElement.style.height = layoutHeight + 'px';
+              clonedElement.style.border = '5px solid white';
             }
           }
         });
-        // Restore borders
+
+        // Restore controls and borders
+        if (controlsOverlay) {
+          (controlsOverlay as HTMLElement).style.display = 'flex';
+        }
         boxEls.forEach((box: Element) => {
           (box as HTMLElement).style.border = '';
         });
-        // Download
+
+        // Download with prefixed filename
         const link = document.createElement('a');
-        link.download = `DM6Assets_${labelText || 'layout'}.jpg`;
+        const fileName = labelText ? `DM_Approval_${labelText}` : 'DM_Approval_layout';
+        link.download = `${fileName}.jpg`;
         link.href = canvas.toDataURL('image/jpeg', 0.9);
         link.click();
       } catch (error) {
@@ -167,16 +181,18 @@ export default function DM6AssetsHeroLayout() {
           transformOrigin: 'top left',
         }}
       >
-        {/* Date Display */}
-        <div style={{ position: 'absolute', top: 32, left: 48, fontSize: 20, fontFamily: 'Arial', fontWeight: 600, color: '#fff', zIndex: 10 }}>
-          {getCurrentDate()}
-        </div>
-        {/* Label Text */}
-        {labelText && (
-          <div style={{ position: 'absolute', left: 228, top: 150, fontSize: 24, background: '#fff', border: '1px solid #ccc', padding: '8px 16px', zIndex: 10 }}>
-            {labelText}
+        {/* Label Text and Date */}
+        <div style={{ position: 'absolute', left: 228, top: 150, zIndex: 10 }}>
+          {labelText && (
+            <div style={{ fontSize: 24, background: '#fff', border: '1px solid #ccc', padding: '8px 16px', marginBottom: 8 }}>
+              {labelText}
+            </div>
+          )}
+          <div style={{ fontSize: 20, fontFamily: 'Arial', fontWeight: 600, color: '#fff' }}>
+            {getCurrentDate()}
           </div>
-        )}
+        </div>
+
         {/* Boxes */}
         {boxes.map((box, index) => (
           <div
@@ -221,6 +237,7 @@ export default function DM6AssetsHeroLayout() {
         />
         {/* Controls Overlayed at Bottom Center */}
         <div
+          className="controls-overlay"
           style={{ position: 'absolute', left: '50%', bottom: 32, transform: 'translateX(-50%)', zIndex: 20, background: 'rgba(255,255,255,0.8)', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 16 }}
         >
           <input
