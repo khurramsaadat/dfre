@@ -197,7 +197,7 @@ export default function DM6AssetsHeroLayout() {
         {boxes.map((box, index) => (
           <div
             key={index}
-            className="box-border"
+            className="box-border group"
             style={{
               position: 'absolute',
               width: box.width,
@@ -211,6 +211,7 @@ export default function DM6AssetsHeroLayout() {
               justifyContent: 'center',
               cursor: 'pointer',
               overflow: 'hidden',
+              transition: 'all 0.3s ease-in-out',
             }}
             onClick={() => handleBoxClick(index)}
             onDragEnter={e => handleDragEnter(e, index)}
@@ -218,14 +219,37 @@ export default function DM6AssetsHeroLayout() {
             onDrop={e => handleDrop(e, index)}
           >
             {box.image ? (
-              <Image src={box.image} alt={`Box ${index + 1}`} fill style={{ objectFit: 'cover' }} />
+              <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-300">
+                <Image
+                  src={box.image}
+                  alt={`Box ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/30 group-hover:via-black/20 group-hover:to-black/30 transition-all duration-300" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="bg-white/90 px-4 py-2 rounded-lg shadow-lg transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                    <span className="text-gray-800 font-semibold">Click to Change</span>
+                  </div>
+                </div>
+              </div>
             ) : (
-              <div style={{ textAlign: 'center', color: '#888' }}>
-                <div style={{ fontWeight: 'bold', fontSize: 18 }}>Drag & Drop</div>
-                <div style={{ fontSize: 14 }}>or Click to Import</div>
-                <div style={{ fontSize: 12, marginTop: 8 }}>[Placeholder]</div>
+              <div className="relative w-full h-full flex items-center justify-center">
+                <div className="text-center text-gray-500 group-hover:text-gray-700 transition-colors duration-300">
+                  <div className="font-bold text-2xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
+                    Drag & Drop
+                  </div>
+                  <div className="text-lg transform group-hover:scale-105 transition-transform duration-300">
+                    or Click to Import
+                  </div>
+                  <div className="text-sm mt-4 transform group-hover:scale-105 transition-transform duration-300">
+                    [Placeholder]
+                  </div>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-blue-500/0 via-blue-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-blue-500/5 group-hover:to-blue-500/10 transition-all duration-300" />
               </div>
             )}
+            <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-300" />
           </div>
         ))}
         <input

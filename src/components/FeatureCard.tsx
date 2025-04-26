@@ -7,11 +7,10 @@ interface FeatureCardProps {
   title: string;
   description: string;
   imageUrl: string;
-  assets: string[];
   href?: string;
 }
 
-const FeatureCard = ({ title, description, imageUrl, assets, href }: FeatureCardProps) => {
+const FeatureCard = ({ title, description, imageUrl, href }: FeatureCardProps) => {
   const router = useRouter();
 
   const handleClick = () => {
@@ -39,16 +38,6 @@ const FeatureCard = ({ title, description, imageUrl, assets, href }: FeatureCard
       <div className="p-4">
         <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
         <p className="text-gray-600 mb-4">{description}</p>
-        <div className="space-y-2">
-          {assets.map((asset, index) => (
-            <div key={index} className="flex items-center text-gray-700">
-              <svg className="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-              </svg>
-              {asset}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

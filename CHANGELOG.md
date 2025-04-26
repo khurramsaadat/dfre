@@ -58,10 +58,24 @@ All notable changes to this project will be documented in this file.
   - Improved control visibility during capture
   - Removed character limit for input text
   - Updated captured image filename to prefix with 'DM Approval_'
+  - Added interactive hover effects to boxes:
+    - Scale transformation on hover
+    - Blue glow effect
+    - Subtle dark overlay for images
+    - Smooth transitions for all effects
+    - Enhanced overlay effects:
+      - Gradient overlay for images
+      - "Click to Change" tooltip for images
+      - Subtle blue gradient for empty boxes
+      - Increased glow intensity
+      - Improved transition animations
+- Simplified feature cards by removing assets list
+- Updated card titles and descriptions for better clarity
 
 ### Fixed
 - Corrected the component import in DM6Assets page to properly display the layout.
 - Fixed type error in Hero component by adding proper TypeScript interface for hideButtons prop.
+- Fixed text centering in DM6AssetsHeroLayout boxes
 
 ### Added
 - Added Netlify deployment configuration with netlify.toml

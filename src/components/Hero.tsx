@@ -11,26 +11,17 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
       title: "Dubai Municipality - 6 Assets",
       description: "For Dubai Municipality's approval",
       imageUrl: "/images/6-assets.png",
-      assets: [
-        "Asset Management"
-      ],
       href: "/dm6assets"
     },
     {
       title: "Dubai Municipality - 3 Assets",
-      description: "Streamlined asset management solution",
-      imageUrl: "/images/DS-layout.png",
-      assets: [
-        "Asset Tracking"
-      ]
+      description: "For Dubai Municipality's approval",
+      imageUrl: "/images/DS-layout.png"
     },
     {
       title: "DFRE Schedule",
-      description: "Efficient scheduling system",
-      imageUrl: "/images/DS-layout.png",
-      assets: [
-        "Schedule Management"
-      ]
+      description: "Design Studio layouts",
+      imageUrl: "/images/DS-layout.png"
     }
   ];
 
@@ -56,7 +47,6 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
               title={feature.title}
               description={feature.description}
               imageUrl={feature.imageUrl}
-              assets={feature.assets}
               href={feature.href}
             />
           ))}
