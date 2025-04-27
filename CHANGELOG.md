@@ -139,3 +139,31 @@ All notable changes to this project will be documented in this file.
 - Reduced image padding to zero and set content padding to p-3 (then p-4) for FeatureCard on home page.
 - Added sizes prop to Next.js Image component in FeatureCard to resolve warning and improve performance.
 - Renamed About link in navbar to 'DM 6 Assets' and linked it to /dm6assets.
+
+## Project Structure, Pages, and Components
+
+### Pages
+- **Home Page (`src/app/page.tsx`)**: Displays the main landing content, including the Hero section with feature cards for navigation to key tools and layouts.
+- **DM 6 Assets Page (`src/app/dm6assets/page.tsx`)**: Hosts the DM6AssetsHeroLayout component, providing an interactive layout for uploading, previewing, and validating images for Dubai Municipality 6 Assets approval.
+- **Root Layout (`src/app/layout.tsx`)**: Wraps all pages with the Header, Footer, and main content area, applying global styles and structure.
+
+### Components
+- **Header (`src/components/Header.tsx`)**: Navigation bar at the top of the site. Contains links to Home, DM 6 Assets, Services, and Contact. Usage: Included in the root layout for site-wide navigation.
+- **Footer (`src/components/Footer.tsx`)**: Footer section with company info, quick links, contact details, and social media. Usage: Included in the root layout for site-wide consistency.
+- **Hero (`src/components/Hero.tsx`)**: Main hero section on the home page, featuring a welcome message and a grid of FeatureCards for navigation. Usage: Used in the home page.
+- **FeatureCard (`src/components/FeatureCard.tsx`)**: Reusable card component for displaying a feature with an image, title, and description. Used in the Hero section for navigation to tools/pages. Accepts props: title, description, imageUrl, href.
+- **DM6AssetsHeroLayout (`src/components/DM6AssetsHeroLayout.tsx`)**: Advanced interactive layout for the DM 6 Assets page. Allows users to drag and drop images, see size/aspect ratio warnings, and capture the layout as a JPG. Usage: Used in the DM 6 Assets page.
+
+## [0.1.4] - 2024-04-27
+
+### Added
+- Created DM 3 Assets page at /dm3assets by duplicating DM 6 Assets page for independent editing.
+
+### Changed
+- Updated navbar: 'Services' is now 'DM 3 Assets' and links to /dm3assets; 'Contact' is now 'Design Studio'.
+- Improved footer social icons: now use official SVGs, consistent sizing, and color-invert hover effect.
+- Added custom tooltips to all social icons in the footer, showing instantly with white text on a dark background.
+
+### Notes
+- DM 3 Assets and DM 6 Assets pages are now independent.
+- Footer and navigation are visually and functionally improved for better UX.

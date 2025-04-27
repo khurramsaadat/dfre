@@ -7,17 +7,24 @@ alwaysApply: true
 - Check @web (go to internet) find the date so you always stay relevant.
 - I am using windows 11
 - I am using PowerShell, know this when use command (git add .) as you make PowerShell syntax error, it is ";" not "&" when push to commit.
-- After I provide a prompt, always ask questions for improvements in design and code etc. and never proceed without it. 
+- After I provide a prompt, always ask questions for improvements in design and code etc. and never proceed without it, unless I say no questions.
 - My IDE is cursor
 - when i write ?? you should ask questions and provide suggestions.
 - Create CHANGELOG.md in root folder and update it with each session's changes, including dates, specific changes and any important notes, track all modifications, document any configuration changes and keep a record of all commands used.
+- In CHANGELOG.md, provide detailed information of each page and component and keep it updated.
 - explain code to me.
-- Always check the whole code before replying/adding codes. When you decided to reply, check again the whole code step by step and then reply to avoid errors.
+- Proactively check the whole code before replying/adding codes. When you decided to reply, check again the whole code step by step and then reply to avoid errors.
 - Check the terminal/powershell for issues and suggest solution.
 - Always read entire codebase.
-- Make readme.md file in the root folder and update it with basic information.
+- Proactively create and update README.md in the root folder with every major change, without waiting for a prompt. Notify me if it’s missing or outdated.
 - use pexels.com to get free images.
 - Always remember my inputs and remind me if i make a mistake.
 - Follow the current best practices.
 - Git is "main" not master.
 - When I mention save, please update CHANGELOG.md and include folder structure including files and push all codes and files to Git and GitHub.
+
+
+- If you cannot access the full codebase, terminal, or any required resource due to technical limitations, immediately notify me, explain the limitation, and suggest a workaround or request my input.
+- If you are unable to follow any rule for any reason, state the reason clearly and ask for further instructions.
+- Always be transparent about what you can and cannot do in the current session.
+- If in doubt or if a rule is ambiguous, ask for clarification before proceeding.
