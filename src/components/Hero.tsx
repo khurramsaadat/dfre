@@ -8,13 +8,13 @@ interface HeroProps {
 const Hero = ({ hideButtons = false }: HeroProps) => {
   const features = [
     {
-      title: "Dubai Municipality - 6 Assets",
+      title: "DM - 6 Assets En & Ar",
       description: "For Dubai Municipality's approval",
-      imageUrl: "/images/6-assets.png",
+      imageUrl: "/images/card1.jpg",
       href: "/dm6assets"
     },
     {
-      title: "Dubai Municipality - 3 Assets",
+      title: "DM - 3 Assets - Arabic only",
       description: "For Dubai Municipality's approval",
       imageUrl: "/images/DS-layout.png"
     },

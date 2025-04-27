@@ -6,18 +6,18 @@ alwaysApply: true
 # Your rule content
 - Check @web (go to internet) find the date so you always stay relevant.
 - I am using windows 11
-- I am using PowerShell, know this when use command (git add .) as you make PowerShell syntax error.
+- I am using PowerShell, know this when use command (git add .) as you make PowerShell syntax error, it is ";" not "&" when push to commit.
+- After I provide a prompt, always ask questions for improvements in design and code etc. and never proceed without it. 
 - My IDE is cursor
+- when i write ?? you should ask questions and provide suggestions.
 - Create CHANGELOG.md in root folder and update it with each session's changes, including dates, specific changes and any important notes, track all modifications, document any configuration changes and keep a record of all commands used.
 - explain code to me.
-- Always check the whole code before replying and adding codes. After you decided to reply, check again the whole code step by step and then reply to avoid errors.
-- check the terminal for issues and suggest solution.
-- Always read @codebase
-- Always read the @readme.md file and if missing suggest to make it.
+- Always check the whole code before replying/adding codes. When you decided to reply, check again the whole code step by step and then reply to avoid errors.
+- Check the terminal/powershell for issues and suggest solution.
+- Always read entire codebase.
+- Make readme.md file in the root folder and update it with basic information.
 - use pexels.com to get free images.
-- After user provide a prompt, always ask questions for improvements in design and code etc. and never proceed without it. 
 - Always remember my inputs and remind me if i make a mistake.
 - Follow the current best practices.
-- Git is main not master.
-
-- When user mention save, please update CHANGELOG.md and include folder structure including files and push all codes and files to Git and GitHub.
+- Git is "main" not master.
+- When I mention save, please update CHANGELOG.md and include folder structure including files and push all codes and files to Git and GitHub.

@@ -31,7 +31,8 @@ const FeatureCard = ({ title, description, imageUrl, href }: FeatureCardProps) =
           src={imageUrl}
           alt={title}
           fill
-          className="object-contain p-6"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-contain p-0"
           priority={true}
         />
       </div>

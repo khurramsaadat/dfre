@@ -57,7 +57,7 @@ All notable changes to this project will be documented in this file.
   - Moved date under input text
   - Improved control visibility during capture
   - Removed character limit for input text
-  - Updated captured image filename to prefix with 'DM Approval_'
+  - Updated captured image filename to prefix with 'DM_Approval_'
   - Added interactive hover effects to boxes:
     - Scale transformation on hover
     - Blue glow effect
@@ -83,8 +83,7 @@ All notable changes to this project will be documented in this file.
 - Added .gitattributes file for consistent line ending handling
 
 ### Current Folder Structure
-```
-├── .next/
+```├── .next/
 ├── .git/
 ├── .cursor/
 ├── node_modules/
@@ -119,3 +118,24 @@ All notable changes to this project will be documented in this file.
 ├── tailwind.config.js
 └── tsconfig.json
 ```
+
+## [0.1.2] - 2024-04-26
+### Added
+- Image size warning feature in DM6Assets page
+  - Shows warning when dropped image size doesn't match box dimensions
+  - Displays required box size for reference
+  - Warning appears below the image size display
+  - Visual indicator with warning emoji and red text
+
+### Changed
+- Enhanced image size display in DM6Assets page
+  - Added semi-transparent background for better visibility
+  - Improved positioning and spacing
+  - Added border radius for better aesthetics
+
+## [0.1.3] - 2024-04-27
+### Changed
+- Updated first card on home page to use card1.jpg image.
+- Reduced image padding to zero and set content padding to p-3 (then p-4) for FeatureCard on home page.
+- Added sizes prop to Next.js Image component in FeatureCard to resolve warning and improve performance.
+- Renamed About link in navbar to 'DM 6 Assets' and linked it to /dm6assets.
