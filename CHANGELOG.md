@@ -184,3 +184,12 @@ All notable changes to this project will be documented in this file.
   - Centered menu links
   - Added semi-transparent white dividers
   - Applied matching gradient to burger menu lines
+
+### Fixed
+- Updated .gitignore file with proper Next.js ignores:
+  - Added .next/ directory
+  - Added other common Next.js related files and directories
+  - Removed duplicate node_modules entry
+  - Added .cursor/ directory to ignore IDE-specific files
+  - Added comments to clarify important files to keep
+  - Removed khurram-rules.mdc from ignored files to ensure it's tracked in version control
