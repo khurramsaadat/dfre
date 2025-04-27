@@ -16,7 +16,8 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
     {
       title: "DM - 3 Assets - Arabic only",
       description: "For Dubai Municipality's approval",
-      imageUrl: "/images/DS-layout.png"
+      imageUrl: "/images/card2.jpg",
+      href: "/dm3assets"
     },
     {
       title: "DFRE Schedule",
@@ -26,7 +27,7 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
   ];
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-20">
+    <div className="bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-white py-20">
       <div className="container mx-auto px-6">
         {!hideButtons && (
           <div className="text-center mb-16">

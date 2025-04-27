@@ -167,3 +167,20 @@ All notable changes to this project will be documented in this file.
 ### Notes
 - DM 3 Assets and DM 6 Assets pages are now independent.
 - Footer and navigation are visually and functionally improved for better UX.
+
+## [0.1.5] - 2024-04-27
+
+### Changed
+- DM3Assets page layout width reduced to 2000px, boxes reduced to 3 and centered horizontally.
+- Controls overlay in DM3Assets moved to bottom right corner.
+- Home page card2 (DM - 3 Assets - Arabic only) now uses card2.jpg as its image.
+
+## [0.1.6] - 2024-04-27
+
+### Changed
+- Updated burger menu styling:
+  - Changed background to gradient (red-orange-yellow)
+  - Updated menu links to white color with yellow hover effect
+  - Centered menu links
+  - Added semi-transparent white dividers
+  - Applied matching gradient to burger menu lines

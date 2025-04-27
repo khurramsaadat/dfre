@@ -12,6 +12,8 @@ This project is a modern, responsive website built with Next.js and Tailwind CSS
 - Updated navbar: 'Services' is now 'DM 3 Assets' and links to `/dm3assets`; 'Contact' is now 'Design Studio'
 - Footer social icons now use official SVGs, are consistently sized, and have a color-invert hover effect
 - Custom tooltips for social icons show instantly with white text on a dark background
+- DM3Assets page: layout width reduced to 2000px, only 3 boxes (centered), controls moved to bottom right
+- Home page card2 (DM - 3 Assets - Arabic only) now uses card2.jpg as its image
 
 ## Folder Structure
 ```

@@ -34,5 +34,5 @@ export default function Typewriter() {
     return () => clearTimeout(timeout);
   }, [charIndex, deleting, wordIndex]);
 
-  return <span className="text-blue-600 font-bold ml-3 uppercase">{displayed}&nbsp;</span>;
+  return <span className="text-orange-900 font-bold ml-3 uppercase">{displayed}&nbsp;</span>;
 } 

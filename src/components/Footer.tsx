@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="bg-[rgb(9,36,57)] text-white">
+    <footer className="bg-orange-900 text-white">
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -20,18 +20,18 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-                  About
+                <Link href="/dm6assets" className="text-gray-300 hover:text-white transition-colors">
+                  DM 6 Assets
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
-                  Services
+                <Link href="/dm3assets" className="text-gray-300 hover:text-white transition-colors">
+                  DM 3 Assets
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  Contact
+                <Link href="/designstudio" className="text-gray-300 hover:text-white transition-colors">
+                  Design Studio
                 </Link>
               </li>
             </ul>
@@ -96,7 +96,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
         </div>
       </div>
     </footer>
