@@ -8,29 +8,29 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">About Us</h3>
             <p className="text-gray-300">
-              We are dedicated to providing the best service to our customers.
+            Welcome to Layout Factory!
             </p>
           </div>
           <div>
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/dm6assets" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/dm6assets" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
                   DM 6 Assets
                 </Link>
               </li>
               <li>
-                <Link href="/dm3assets" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/dm3assets" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
                   DM 3 Assets
                 </Link>
               </li>
               <li>
-                <Link href="/designstudio" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/designstudio" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
                   Design Studio
                 </Link>
               </li>
@@ -39,9 +39,9 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Contact</h3>
             <ul className="space-y-2 text-gray-300">
-              <li>Email: khurram.saadat@yahoo.com</li>
-              <li>Phone: (123) 456-7890</li>
-              <li>Address: Falconcity of wonders, Dubailand, Dubai, UAE</li>
+              <li>khurram.saadat@yahoo.com</li>
+              <li>Falconcity of wonders, Dubailand</li>
+              <li>Dubai, UAE</li>
             </ul>
           </div>
           <div>

@@ -31,7 +31,7 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
       <div className="container mx-auto px-6">
         {!hideButtons && (
           <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-6">
+            <h1 style={{ fontSize: '4rem', fontWeight: 900 }} className="mb-6 tracking-tight drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]">
               Welcome to Your Next.js Website
             </h1>
             <p className="text-xl mb-8">

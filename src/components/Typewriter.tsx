@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 
-const typewriterWords = ['for Design Studio', 'for Dubai Municipality'];
+const typewriterWords = ['for Design Studio', 'for DM'];
 
 export default function Typewriter() {
   const [displayed, setDisplayed] = useState('');
@@ -34,5 +34,5 @@ export default function Typewriter() {
     return () => clearTimeout(timeout);
   }, [charIndex, deleting, wordIndex]);
 
-  return <span className="text-orange-900 font-bold ml-3 uppercase">{displayed}&nbsp;</span>;
+  return <span className="text-orange-900 font-black md:ml-3 uppercase">{displayed}&nbsp;</span>;
 } 

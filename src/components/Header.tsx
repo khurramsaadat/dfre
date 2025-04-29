@@ -2,10 +2,25 @@
 import Link from 'next/link';
 import GearIcon from './DiamondIcon';
 import '../app/globals.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [linksVisible, setLinksVisible] = useState(false);
+
+  // Handle menu animation timing
+  useEffect(() => {
+    if (menuOpen) {
+      // Delay the links animation until after menu slides in
+      const timer = setTimeout(() => {
+        setLinksVisible(true);
+      }, 300); // Match this with menuSlideIn duration
+      return () => clearTimeout(timer);
+    } else {
+      setLinksVisible(false);
+    }
+  }, [menuOpen]);
+
   return (
     <header className="bg-orange-900 shadow-md">
       <nav className="container mx-auto px-6 py-4">
@@ -18,16 +33,16 @@ const Header = () => {
             </Link>
           </div>
           <div className="hidden md:flex space-x-8">
-            <Link href="/" className="text-gray-300 hover:text-white transition-colors">
+            <Link href="/" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
               Home
             </Link>
-            <Link href="/dm6assets" className="text-gray-300 hover:text-white transition-colors">
+            <Link href="/dm6assets" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
               DM 6 Assets
             </Link>
-            <Link href="/dm3assets" className="text-gray-300 hover:text-white transition-colors">
+            <Link href="/dm3assets" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
               DM 3 Assets
             </Link>
-            <Link href="/designstudio" className="text-gray-300 hover:text-white transition-colors">
+            <Link href="/designstudio" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
               Design Studio
             </Link>
           </div>
@@ -42,23 +57,59 @@ const Header = () => {
           </button>
         </div>
         <div
-          className={`fixed top-1/2 right-0 h-[50vh] w-[70vw] max-w-xs bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 shadow-2xl rounded-l-2xl z-40 transform -translate-y-1/2 ${menuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out md:hidden`}
+          className={`fixed top-16 right-0 h-[50vh] w-[70vw] max-w-xs bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 shadow-2xl z-40 rounded-l-3xl ${menuOpen ? 'menu-slide-in' : 'translate-x-full'} transition-transform duration-300 ease-in-out md:hidden overflow-hidden`}
         >
-          <div className="flex flex-col h-full p-8 space-y-8 text-center">
-            <Link href="/" className="text-lg font-bold text-white hover:text-yellow-100 transition-colors" onClick={() => setMenuOpen(false)}>
-              Home
+          <div className="flex flex-col h-full justify-center p-8 space-y-6 text-center">
+            <Link 
+              href="/" 
+              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              onClick={() => setMenuOpen(false)}
+              style={{ animationDelay: '0ms' }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span className="relative z-10">Home</span>
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
-            <Link href="/dm6assets" className="text-lg font-bold text-white hover:text-yellow-100 transition-colors" onClick={() => setMenuOpen(false)}>
-              DM 6 Assets
+            <Link 
+              href="/dm6assets" 
+              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              onClick={() => setMenuOpen(false)}
+              style={{ animationDelay: '100ms' }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              <span className="relative z-10">DM 6 Assets</span>
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
-            <Link href="/dm3assets" className="text-lg font-bold text-white hover:text-yellow-100 transition-colors" onClick={() => setMenuOpen(false)}>
-              DM 3 Assets
+            <Link 
+              href="/dm3assets" 
+              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              onClick={() => setMenuOpen(false)}
+              style={{ animationDelay: '200ms' }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="relative z-10">DM 3 Assets</span>
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
-            <Link href="/designstudio" className="text-lg font-bold text-white hover:text-yellow-100 transition-colors" onClick={() => setMenuOpen(false)}>
-              Design Studio
+            <Link 
+              href="/designstudio" 
+              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              onClick={() => setMenuOpen(false)}
+              style={{ animationDelay: '300ms' }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              <span className="relative z-10">Design Studio</span>
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
           </div>
         </div>

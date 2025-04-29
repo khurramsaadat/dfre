@@ -139,6 +139,25 @@ All notable changes to this project will be documented in this file.
 - Reduced image padding to zero and set content padding to p-3 (then p-4) for FeatureCard on home page.
 - Added sizes prop to Next.js Image component in FeatureCard to resolve warning and improve performance.
 - Renamed About link in navbar to 'DM 6 Assets' and linked it to /dm6assets.
+- Enhanced mobile menu design and animations:
+  - Moved menu to top-right with rounded corners
+  - Added slide-up animations for menu items
+  - Added icons next to mobile menu links
+  - Improved menu positioning and styling
+  - Added staggered animations for better UX
+- Improved mobile responsiveness:
+  - Fixed alignment of "Layout Creation" text and typewriter effect
+  - Added proper padding for mobile view
+  - Ensured consistent left alignment in mobile view
+  - Removed unnecessary margins in mobile layout
+
+### Added
+- New mobile menu features:
+  - Rounded corners on both top and bottom left
+  - Icons for each menu item
+  - Smooth slide-up animations
+  - Improved hover effects
+  - Better spacing and visual hierarchy
 
 ## Project Structure, Pages, and Components
 

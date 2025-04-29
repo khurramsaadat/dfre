@@ -1,6 +1,4 @@
 {
-  "/not-found": "app/not-found.js",
-  "/dm6assets/page": "app/dm6assets/page.js",
-  "/dm3assets/page": "app/dm3assets/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/dm6assets/page": "app/dm6assets/page.js"
 }

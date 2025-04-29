@@ -7,8 +7,8 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Your Next.js Website',
-  description: 'A modern website built with Next.js and Tailwind CSS',
+  title: 'Layout Factory',
+  description: 'Layouts for DFRE',
 };
 
 export default function RootLayout({
