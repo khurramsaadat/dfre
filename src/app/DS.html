@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Positioning</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #canvas {
+            border: 2px solid black;
+            width: 1920px;
+            height: 900px;
+            position: relative;
+            margin: auto;
+        }
+
+        .droppable {
+            border: 1px solid red;
+            position: absolute;
+            overflow: hidden;
+        }
+
+        #textLabel {
+            position: absolute;
+            left: 150px;
+            top: 150px;
+            background-color: white;
+            border: 1px solid black;
+            padding: 5px;
+            display: none;
+        }
+
+        #controlWrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid black;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        #textInput,
+        #capture {
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        #editableText {
+            position: absolute;
+            width: 250px;
+            height: 20px;
+            left: 510px;
+            top: 840px; 
+            background-color: transparent;
+            border: 1px dashed #aaa;
+            color: black;
+            padding: 20px;
+            outline: none;
+            font-size: 22px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="canvas">
+        <div class="droppable" style="width:640px;height:360px;left:1280px;top:0px;"></div>
+        <div class="droppable" style="width:1280px;height:720px;left:0px;top:0px;"></div>
+        <div class="droppable" style="width:800px;height:180px;left:0px;top:720px;"></div>
+        <div id="textLabel"></div>
+        <div id="editableText" contenteditable="true"></div>
+    </div>
+
+    <div id="controlWrapper">
+        <input type="text" id="textInput" placeholder="Enter text here">
+        <button id="capture">Capture Image</button>
+        <br>
+        <label>Text Color: </label>
+        <input type="color" id="textColorPicker">
+    </div>
+
+    <input type="file" id="fileInput" style="display:none;" accept="image/*">
+
+    <!-- Include jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+            var currentDroppable;
+
+            $('.droppable').on('click', function () {
+                currentDroppable = $(this);
+                $('#fileInput').click();
+            });
+
+            $('#fileInput').on('change', function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var img = $('<img>').attr('src', e.target.result).css({
+                            width: '100%',
+                            height: '100%'
+                        });
+                        currentDroppable.empty().append(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+         $('#capture').on('click', function () {
+    var text = $('#textInput').val();
+
+    // Hide the border of editableText
+    $('#editableText').css('border', 'none');
+
+    $('.droppable').css('border', 'none');
+    $('#textLabel').hide();
+
+    html2canvas(document.getElementById('canvas'), { scale: 2 }).then(function (canvas) {
+        $('.droppable').css('border', '1px solid red');
+        $('#textLabel').text(text).show();
+
+        // Reset the border of editableText to its original style after capture
+        $('#editableText').css('border', '0px dashed #aaa');
+
+        var link = document.createElement('a');
+        link.href = canvas.toDataURL('image/jpeg', 1.0);
+        link.download = 'DesignStudio_' + text + '.jpg';
+        link.click();
+    });
+});
+
+
+            $('#editableText').on('paste', function (e) {
+                e.preventDefault();  // Stop the default paste action
+
+                var text = '';
+                if (e.clipboardData || e.originalEvent.clipboardData) {
+                    text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                } else if (window.clipboardData) {
+                    text = window.clipboardData.getData('Text');
+                }
+
+                document.execCommand("insertText", false, text);  // Insert the plain text
+            });
+
+            $('#textColorPicker').on('change', function () {
+                $('#editableText').css('color', $(this).val());
+            });
+
+            // Initialize draggable for the editableText area
+            $('#editableText').draggable({
+                containment: '#canvas'  // Ensures the text remains inside the canvas
+            });
+        });
+    </script>
+
+</body>
+
+</html>

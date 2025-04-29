@@ -212,3 +212,27 @@ All notable changes to this project will be documented in this file.
   - Added .cursor/ directory to ignore IDE-specific files
   - Added comments to clarify important files to keep
   - Removed khurram-rules.mdc from ignored files to ensure it's tracked in version control
+
+## [Latest Updates] - 2024-03-27
+
+### Navigation Improvements
+- Added active link indication in desktop and mobile navigation:
+  - Desktop: Active links show in white with permanent underline
+  - Mobile: Active links have semi-transparent white background with rounded corners
+  - Improved visual feedback for current page location
+  - Added smooth transitions between active states
+  - Implemented using Next.js usePathname hook for route tracking
+- Extended active link indication to footer Quick Links:
+  - Matching header navigation style
+  - White text and permanent underline for active links
+  - Gray text with hover effects for inactive links
+  - Consistent visual feedback across all navigation elements
+
+### DesignStudio Component Updates
+- Adjusted editable text box positioning in Box3:
+  - Increased text box width to 350px for more character space
+  - Set fixed height to 40px for single-line text display
+  - Positioned text box 10px up from bottom edge of Box3
+  - Maintained right alignment with flex layout
+  - Added white-space: nowrap and overflow handling for better text containment
+  - Optimized padding (5px vertical, 15px horizontal)

@@ -1,12 +1,14 @@
 "use client";
 import Link from 'next/link';
-import GearIcon from './DiamondIcon';
+import GearIcon from './GearIcon';
 import '../app/globals.css';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [linksVisible, setLinksVisible] = useState(false);
+  const pathname = usePathname();
 
   // Handle menu animation timing
   useEffect(() => {
@@ -21,28 +23,44 @@ const Header = () => {
     }
   }, [menuOpen]);
 
+  const getLinkClasses = (path: string) => {
+    const baseClasses = "transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100";
+    const isActive = pathname === path;
+    return `${baseClasses} ${isActive ? 'text-white after:scale-x-100' : 'text-gray-300 after:scale-x-0 hover:text-white'}`;
+  };
+
+  const getMobileLinkClasses = (path: string) => {
+    const baseClasses = `text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`;
+    const isActive = pathname === path;
+    return `${baseClasses} ${isActive ? 'bg-white/20 rounded-lg' : ''}`;
+  };
+
   return (
     <header className="bg-orange-900 shadow-md">
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center' }}>
-            <Link href="/">
+          <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-3">
               <span style={{ display: 'inline-block' }}>
                 <GearIcon />
               </span>
+              <div className="flex flex-col text-white">
+                <span className="text-sm font-semibold leading-none">LAYOUT</span>
+                <span className="text-sm font-semibold leading-none">FACTORY</span>
+              </div>
             </Link>
           </div>
           <div className="hidden md:flex space-x-8">
-            <Link href="/" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
+            <Link href="/" className={getLinkClasses('/')}>
               Home
             </Link>
-            <Link href="/dm6assets" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
+            <Link href="/dm6assets" className={getLinkClasses('/dm6assets')}>
               DM 6 Assets
             </Link>
-            <Link href="/dm3assets" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
+            <Link href="/dm3assets" className={getLinkClasses('/dm3assets')}>
               DM 3 Assets
             </Link>
-            <Link href="/designstudio" className="text-gray-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100">
+            <Link href="/designstudio" className={getLinkClasses('/designstudio')}>
               Design Studio
             </Link>
           </div>
@@ -62,7 +80,7 @@ const Header = () => {
           <div className="flex flex-col h-full justify-center p-8 space-y-6 text-center">
             <Link 
               href="/" 
-              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              className={getMobileLinkClasses('/')}
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '0ms' }}
             >
@@ -75,7 +93,7 @@ const Header = () => {
             <hr className="border-2 border-white/20" />
             <Link 
               href="/dm6assets" 
-              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              className={getMobileLinkClasses('/dm6assets')}
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '100ms' }}
             >
@@ -88,7 +106,7 @@ const Header = () => {
             <hr className="border-2 border-white/20" />
             <Link 
               href="/dm3assets" 
-              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              className={getMobileLinkClasses('/dm3assets')}
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '200ms' }}
             >
@@ -101,7 +119,7 @@ const Header = () => {
             <hr className="border-2 border-white/20" />
             <Link 
               href="/designstudio" 
-              className={`text-lg font-bold text-white relative overflow-hidden group link-slide-up ${linksVisible ? 'animate' : ''} flex items-center justify-center gap-2`}
+              className={getMobileLinkClasses('/designstudio')}
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '300ms' }}
             >

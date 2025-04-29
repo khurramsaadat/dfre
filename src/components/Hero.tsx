@@ -22,7 +22,8 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
     {
       title: "DFRE Schedule",
       description: "Design Studio layouts",
-      imageUrl: "/images/DS-layout.png"
+      imageUrl: "/images/card3.jpg",
+      href: "/designstudio"
     }
   ];
 
