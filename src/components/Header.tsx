@@ -10,6 +10,13 @@ const Header = () => {
   const [linksVisible, setLinksVisible] = useState(false);
   const pathname = usePathname();
 
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'DM 6 Assets', href: '/dm6assets' },
+    { name: 'DM 3 Assets', href: '/dm3assets' },
+    { name: 'Design Studio', href: '/ds' },
+  ]
+
   // Handle menu animation timing
   useEffect(() => {
     if (menuOpen) {
@@ -60,7 +67,7 @@ const Header = () => {
             <Link href="/dm3assets" className={getLinkClasses('/dm3assets')}>
               DM 3 Assets
             </Link>
-            <Link href="/designstudio" className={getLinkClasses('/designstudio')}>
+            <Link href="/ds" className={getLinkClasses('/ds')}>
               Design Studio
             </Link>
           </div>
@@ -118,8 +125,8 @@ const Header = () => {
             </Link>
             <hr className="border-2 border-white/20" />
             <Link 
-              href="/designstudio" 
-              className={getMobileLinkClasses('/designstudio')}
+              href="/ds" 
+              className={getMobileLinkClasses('/ds')}
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '300ms' }}
             >

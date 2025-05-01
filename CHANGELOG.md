@@ -90,12 +90,16 @@ All notable changes to this project will be documented in this file.
 ├── public/
 │   └── images/
 │       ├── 6-assets.png
+│       ├── card1.jpg
+│       ├── card2.jpg
 │       └── DS-layout.png
 ├── src/
 │   ├── app/
 │   │   ├── dm6assets/
 │   │   │   └── page.tsx
-│   │   ├── DMBoxLayout-test/
+│   │   ├── dm3assets/
+│   │   │   └── page.tsx
+│   │   ├── ds/
 │   │   │   └── page.tsx
 │   │   ├── globals.css
 │   │   ├── layout.tsx
@@ -106,9 +110,9 @@ All notable changes to this project will be documented in this file.
 │       ├── FeatureCard.tsx
 │       ├── Footer.tsx
 │       ├── Header.tsx
-│       └── Hero.tsx
+│       ├── Hero.tsx
+│       └── Typewriter.tsx
 ├── CHANGELOG.md
-├── DM 6 boxes.html
 ├── .gitignore
 ├── next-env.d.ts
 ├── netlify.toml
@@ -204,16 +208,31 @@ All notable changes to this project will be documented in this file.
   - Added semi-transparent white dividers
   - Applied matching gradient to burger menu lines
 
-### Fixed
-- Updated .gitignore file with proper Next.js ignores:
-  - Added .next/ directory
-  - Added other common Next.js related files and directories
-  - Removed duplicate node_modules entry
-  - Added .cursor/ directory to ignore IDE-specific files
-  - Added comments to clarify important files to keep
-  - Removed khurram-rules.mdc from ignored files to ensure it's tracked in version control
-
 ## [Latest Updates] - 2024-03-27
+
+### Design System Page Updates
+- Enhanced Box2 with full interactivity matching DM3Assets:
+  - Added drag and drop functionality for images
+  - Implemented image preview with proper sizing
+  - Added hover effects and visual feedback
+  - Included size information display and warnings
+  - Added "Click to Change" tooltip
+  - Implemented smooth transitions and animations
+- Improved layout structure:
+  - Removed scroll bars for cleaner appearance
+  - Added overflow hidden to prevent unwanted scrolling
+  - Fixed width containers for precise positioning
+- Maintained basic page structure with:
+  - White background
+  - Container layout
+  - Clean slate for new content
+
+### Footer Improvements
+- Added link to Design System page through footer logo
+- Enhanced logo interaction with hover effects:
+  - Smooth scale animation on hover
+  - Text color transition
+  - Improved visual feedback
 
 ### Navigation Improvements
 - Added active link indication in desktop and mobile navigation:
@@ -236,3 +255,18 @@ All notable changes to this project will be documented in this file.
   - Maintained right alignment with flex layout
   - Added white-space: nowrap and overflow handling for better text containment
   - Optimized padding (5px vertical, 15px horizontal)
+
+### Enhanced
+- Advertisement Number functionality
+  - Refined default position in lower right corner of Box3
+  - Optimized visual feedback:
+    - Maintained subtle hover scale effect
+    - Removed dragging scale transform
+    - Enhanced position guide visibility
+    - Improved border contrast
+  - Added reset position button
+  - Maintains position during image capture
+- Footer improvements
+  - Added clickable mailto link for email address
+  - Added hover effect for better user feedback
+  - Improved text styling and spacing
