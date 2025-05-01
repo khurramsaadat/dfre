@@ -17,7 +17,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <Link href="/ds" className="flex flex-row items-center gap-4 mb-2 group">
+            <Link href="/" className="flex flex-row items-center gap-4 mb-2 group">
               <div className="w-8 h-8 transition-transform group-hover:scale-110">
                 <GearIcon />
               </div>

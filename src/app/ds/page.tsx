@@ -367,24 +367,19 @@ export default function DS() {
         .adv-number {
           cursor: move;
           user-select: none;
-          background: rgba(255, 255, 255, 0.1);
-          padding: 4px 8px;
-          border-radius: 4px;
-          transition: background-color 0.2s, transform 0.2s;
+          transition: transform 0.2s ease;
         }
         .adv-number:hover {
-          background: rgba(255, 255, 255, 0.2);
           transform: scale(1.02);
         }
         .adv-number.dragging {
-          background: rgba(255, 255, 255, 0.3);
-          box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-          transition: none;
+          transform: scale(1.05);
         }
         .capturing .adv-number {
-          background: transparent !important;
-          transform: none !important;
-          box-shadow: none !important;
+          display: none !important;
+        }
+        .capturing .position-guide {
+          display: none !important;
         }
         .position-guide {
           pointer-events: none;
@@ -432,29 +427,34 @@ export default function DS() {
             {/* Draggable Advertisement Number */}
             {advNumber && (
               <>
+                {/* Display version (visible during normal use) */}
                 <div 
                   ref={advRef}
-                  className={`adv-number absolute z-30 font-semibold text-lg ${isDragging ? 'dragging' : ''}`}
+                  className={`adv-number absolute z-30 font-semibold text-lg ${isDragging ? 'dragging' : ''} capturing:hidden`}
                   style={{ 
                     color: textColor,
                     left: `${advPosition.x}px`,
                     top: `${advPosition.y}px`,
-                    cursor: isDragging ? 'grabbing' : 'grab'
+                    cursor: isDragging ? 'grabbing' : 'grab',
+                    padding: '4px 8px'
                   }}
                   onMouseDown={handleAdvMouseDown}
                 >
                   {advNumber}
                 </div>
+                
+                {/* Capture version (only visible during capture) */}
                 <div 
-                  className="position-guide absolute z-20"
-                  style={{
+                  className="absolute z-30 font-semibold text-lg hidden capturing:block"
+                  style={{ 
+                    color: textColor,
                     left: `${advPosition.x}px`,
                     top: `${advPosition.y}px`,
-                    width: advRef.current?.offsetWidth || 0,
-                    height: advRef.current?.offsetHeight || 0,
-                    filter: 'invert(1)',
+                    padding: '0'
                   }}
-                />
+                >
+                  {advNumber}
+                </div>
               </>
             )}
           </div>

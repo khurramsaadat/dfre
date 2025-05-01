@@ -88,11 +88,14 @@ All notable changes to this project will be documented in this file.
 ├── .cursor/
 ├── node_modules/
 ├── public/
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
 │   └── images/
 │       ├── 6-assets.png
 │       ├── card1.jpg
 │       ├── card2.jpg
-│       └── DS-layout.png
+│       ├── DS-layout.png
+│       └── facebook_icon.svg
 ├── src/
 │   ├── app/
 │   │   ├── dm6assets/
@@ -270,3 +273,31 @@ All notable changes to this project will be documented in this file.
   - Added clickable mailto link for email address
   - Added hover effect for better user feedback
   - Improved text styling and spacing
+
+## [Unreleased]
+
+### Enhanced
+- Improved favicon implementation
+  - Moved favicon files to root public directory for proper serving
+  - Removed redundant manual link tags
+  - Using Next.js metadata API exclusively for favicon configuration
+  - Added shortcut icon and Apple touch icon support
+
+### Added
+- Added favicons and social media icons
+  - Added favicon-16x16.png for small favicon
+  - Added favicon-32x32.png for standard favicon
+  - Added facebook_icon.svg for social media links
+  - Improved site branding and social media integration
+  - Properly linked favicons in HTML head and Next.js metadata
+
+### Fixed
+- Updated Design Studio navigation links
+  - Changed desktop navigation link from `/designstudio` to `/ds`
+  - Changed mobile navigation link from `/designstudio` to `/ds`
+  - Updated active link highlighting for `/ds` route
+  - Updated card3 link in homepage to point to `/ds`
+- Completely removed background from Advertisement Number in captured JPG
+  - Created separate display and capture versions of the Advertisement Number
+  - Ensured absolutely no background or visual effects appear in the final image
+  - Maintained normal interactive features during regular use
