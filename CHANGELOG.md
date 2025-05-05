@@ -211,6 +211,43 @@ All notable changes to this project will be documented in this file.
   - Added semi-transparent white dividers
   - Applied matching gradient to burger menu lines
 
+## [0.1.7] - 2024-04-27
+
+### Added
+- Implemented social sharing functionality
+  - Added OpenGraph and Twitter Card meta tags for better social sharing
+  - Configured global sharing card using card1.jpg
+  - Added Google Analytics tracking for share events
+  - Added share tracking functionality
+  - Implemented English-only metadata for sharing
+
+### Technical Details
+- Updated Next.js metadata configuration in layout.tsx with:
+  - OpenGraph meta tags
+  - Twitter Card meta tags
+  - Share tracking scripts
+  - Google Analytics integration
+- Configured sharing card dimensions (1200x630)
+- Added share event tracking through Google Analytics
+
+### Configuration Changes
+- Added metadataBase URL configuration
+- Added social sharing meta tags
+- Added Google Analytics tracking code
+- Updated site title and description for sharing
+
+## [0.1.8] - 2024-04-27
+
+### Changed
+- Removed Google Analytics integration
+- Simplified share tracking to use console.log
+- Updated TypeScript types to remove GA-related definitions
+
+### Technical Details
+- Removed Google Analytics script and measurement ID from layout.tsx
+- Simplified share tracking function
+- Removed unused type definitions from global.d.ts
+
 ## [Latest Updates] - 2024-03-27
 
 ### Design System Page Updates
