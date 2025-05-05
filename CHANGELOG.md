@@ -269,6 +269,12 @@ All notable changes to this project will be documented in this file.
 - Removed ShareButton component and related functionality
 - Simplified sharing implementation to use native sharing only
 
+## [0.2.1] - 2024-04-27
+
+### Fixed
+- Updated social sharing image path to use existing card1.jpg instead of non-existent social-share-card.jpg
+- Fixed OpenGraph and Twitter Card image references
+
 ## [Latest Updates] - 2024-03-27
 
 ### Design System Page Updates

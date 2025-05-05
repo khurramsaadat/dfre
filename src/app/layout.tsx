@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     description: 'Explore Dubai Calendar - Your Ultimate Guide to Events in Dubai',
     images: [
       {
-        url: '/images/social-share-card.jpg',
+        url: '/images/card1.jpg',
         width: 1200,
         height: 630,
         alt: 'DFRE Templates',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'DFRE Templates',
     description: 'Explore Dubai Calendar - Your Ultimate Guide to Events in Dubai',
-    images: ['/images/social-share-card.jpg'],
+    images: ['/images/card1.jpg'],
   },
 };
 
