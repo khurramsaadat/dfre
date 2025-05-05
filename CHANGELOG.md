@@ -263,6 +263,12 @@ All notable changes to this project will be documented in this file.
 - Implemented share handling with loading states
 - Added error boundary for share failures
 
+## [0.2.0] - 2024-04-27
+
+### Removed
+- Removed ShareButton component and related functionality
+- Simplified sharing implementation to use native sharing only
+
 ## [Latest Updates] - 2024-03-27
 
 ### Design System Page Updates
