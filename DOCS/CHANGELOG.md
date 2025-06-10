@@ -365,3 +365,34 @@ All notable changes to this project will be documented in this file.
   - Created separate display and capture versions of the Advertisement Number
   - Ensured absolutely no background or visual effects appear in the final image
   - Maintained normal interactive features during regular use
+
+## [Unreleased] - 2024-06-09
+### Changed
+- DS page controls overlay: Grouped 'Advertisement No.' and 'Text Color' vertically, added divider, and placed 'DS Image Name' below divider for better UX.
+- Thumbs up confirmation now overlays the Capture Image button with graffiti effect and animation.
+
+## 2024-06-09
+- Created DOCS folder and initialized PROGRESS.md, CHANGELOG.md, and INPUTS.md as per project rules.
+- Baseline project directory structure:
+
+```
+dfre/
+  public/
+    images/
+  src/
+    app/
+      dm3assets/
+      dm6assets/
+      ds/
+    components/
+    types/
+    utils/
+  CHANGELOG.md
+  netlify.toml
+  package-lock.json
+  package.json
+  postcss.config.js
+  README.md
+  tailwind.config.js
+  tsconfig.json
+``` 

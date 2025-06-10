@@ -64,6 +64,7 @@ export default function DS() {
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState<Position>({ x: 0, y: 0 });
   const advRef = useRef<HTMLDivElement>(null);
+  const [showThumbsUp, setShowThumbsUp] = useState(false);
 
   // Calculate Box3's position in the canvas
   const box3Position = {
@@ -221,7 +222,7 @@ export default function DS() {
   }, [isDragging]);
 
   const handleCaptureImage = async () => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !dsImageName.trim()) return;
 
     try {
       // Reset scale and temporarily hide borders and effects
@@ -273,13 +274,15 @@ export default function DS() {
       
       // Create download link
       const link = document.createElement('a');
-      const filename = dsImageName ? 
-        `${dsImageName.trim() || 'DS'}_${new Date().toISOString().split('T')[0]}.jpg` : 
-        `DS_${new Date().toISOString().split('T')[0]}.jpg`;
+      const filename = `${dsImageName}.jpg`;
       
       link.download = filename;
       link.href = image;
       link.click();
+
+      // Show thumbs up confirmation
+      setShowThumbsUp(true);
+      setTimeout(() => setShowThumbsUp(false), 1500);
 
     } catch (error) {
       console.error('Error capturing image:', error);
@@ -392,6 +395,20 @@ export default function DS() {
         .adv-number.dragging + .position-guide {
           opacity: 1;
         }
+        .graffiti-thumbs {
+          text-shadow:
+            2px 2px 0 #000,
+            -2px -2px 0 #000,
+            2px -2px 0 #000,
+            -2px 2px 0 #000,
+            0 4px 12px #00ffea,
+            0 0 8px #ff00c8;
+          filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 2px #00ffea);
+          font-weight: bold;
+          color: #fff700;
+          /* graffiti paint look */
+          border-radius: 8px;
+        }
       `}</style>
       <div className="container mx-auto px-4 pb-0 pt-8 flex flex-col items-center overflow-hidden">     
         <div 
@@ -468,77 +485,82 @@ export default function DS() {
             }}
           >
             <div className="flex flex-col gap-4">
-              {/* Advertisement Number Input with Reset Button */}
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Advertisement No.
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="ADVI-012345-123456"
-                      value={advNumber}
-                      onChange={(e) => setAdvNumber(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <button
-                      onClick={handleResetPosition}
-                      className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 transition-colors duration-200 flex items-center gap-1"
-                      title="Reset Position"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* DS Image Name and Text Color Controls */}
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    DS Image Name
-                  </label>
+              {/* Advertisement No. and Text Color Grouped Vertically */}
+              <div className="flex flex-col gap-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Advertisement No.
+                </label>
+                <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="DS Image Name"
-                    value={dsImageName}
-                    onChange={(e) => setDsImageName(e.target.value)}
-                    className="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="ADVI-012345-123456"
+                    value={advNumber}
+                    onChange={(e) => setAdvNumber(e.target.value)}
+                    className="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <button
+                    onClick={handleResetPosition}
+                    className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 transition-colors duration-200 flex items-center gap-1"
+                    title="Reset Position"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                    </svg>
+                  </button>
                 </div>
-                <div>
+                <div className="flex items-center gap-2 mt-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Text Color
                   </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={textColor}
-                      onChange={(e) => setTextColor(e.target.value)}
-                      className="w-8 h-8 rounded cursor-pointer"
-                    />
-                    <div 
-                      className="w-16 h-8 rounded border border-gray-300 flex items-center justify-center text-xs"
-                      style={{ backgroundColor: textColor, color: textColor === '#000000' ? '#ffffff' : '#000000' }}
-                    >
-                      {textColor.toUpperCase()}
-                    </div>
+                  <input
+                    type="color"
+                    value={textColor}
+                    onChange={(e) => setTextColor(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer"
+                  />
+                  <div 
+                    className="w-16 h-8 rounded border border-gray-300 flex items-center justify-center text-xs"
+                    style={{ backgroundColor: textColor, color: textColor === '#000000' ? '#ffffff' : '#000000' }}
+                  >
+                    {textColor.toUpperCase()}
                   </div>
                 </div>
               </div>
-
-              {/* Capture Button */}
+              {/* Divider */}
+              <div className="border-t border-gray-300 my-2" />
+              {/* DS Image Name Below Divider */}
+              <div className="flex flex-col gap-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  DS Image Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="DS Image Name"
+                  value={dsImageName}
+                  onChange={(e) => setDsImageName(e.target.value)}
+                  className="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              {/* Capture Button remains below */}
               <button
                 onClick={handleCaptureImage}
-                className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 w-full justify-center"
+                className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 w-full justify-center relative overflow-visible"
+                disabled={!dsImageName.trim()}
+                style={{ opacity: !dsImageName.trim() ? 0.5 : 1, cursor: !dsImageName.trim() ? 'not-allowed' : 'pointer' }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
                 </svg>
                 Capture Image
+                {showThumbsUp && (
+                  <span
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl pointer-events-none graffiti-thumbs animate-bounce"
+                    style={{ opacity: 0.85 }}
+                    aria-label="Image saved confirmation"
+                  >
+                    👍
+                  </span>
+                )}
               </button>
             </div>
           </div>
