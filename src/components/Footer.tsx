@@ -47,9 +47,10 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/ds" className={getLinkClasses('/ds')}>
-                  Design Studio
-                </Link>
+                <Link href="/design-studio" className={getLinkClasses('/design-studio')}>Design Studio</Link>
+              </li>
+              <li>
+                <Link href="/locations" className={getLinkClasses('/locations')}>Locations</Link>
               </li>
             </ul>
           </div>

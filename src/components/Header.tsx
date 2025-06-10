@@ -4,6 +4,7 @@ import GearIcon from './GearIcon';
 import '../app/globals.css';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { HomeIcon, BuildingOffice2Icon, DocumentTextIcon, PencilIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,7 +15,8 @@ const Header = () => {
     { name: 'Home', href: '/' },
     { name: 'DM 6 Assets', href: '/dm6assets' },
     { name: 'DM 3 Assets', href: '/dm3assets' },
-    { name: 'Design Studio', href: '/ds' },
+    { name: 'Design Studio', href: '/design-studio' },
+    { name: 'Locations', href: '/locations' },
   ]
 
   // Handle menu animation timing
@@ -59,16 +61,19 @@ const Header = () => {
           </div>
           <div className="hidden md:flex space-x-8">
             <Link href="/" className={getLinkClasses('/')}>
-              Home
+              <HomeIcon className="w-5 h-5 mr-1 inline" /> Home
             </Link>
             <Link href="/dm6assets" className={getLinkClasses('/dm6assets')}>
-              DM 6 Assets
+              <BuildingOffice2Icon className="w-5 h-5 mr-1 inline" /> DM 6 Assets
             </Link>
             <Link href="/dm3assets" className={getLinkClasses('/dm3assets')}>
-              DM 3 Assets
+              <DocumentTextIcon className="w-5 h-5 mr-1 inline" /> DM 3 Assets
             </Link>
-            <Link href="/ds" className={getLinkClasses('/ds')}>
-              Design Studio
+            <Link href="/design-studio" className={getLinkClasses('/design-studio')}>
+              <PencilIcon className="w-5 h-5 mr-1 inline" /> Design Studio
+            </Link>
+            <Link href="/locations" className={getLinkClasses('/locations')}>
+              <MapPinIcon className="w-5 h-5 mr-1 inline" /> Locations
             </Link>
           </div>
           <button
@@ -91,9 +96,7 @@ const Header = () => {
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '0ms' }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
+              <HomeIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">Home</span>
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
@@ -104,9 +107,7 @@ const Header = () => {
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '100ms' }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
+              <BuildingOffice2Icon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">DM 6 Assets</span>
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
@@ -117,23 +118,30 @@ const Header = () => {
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '200ms' }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <DocumentTextIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">DM 3 Assets</span>
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
             <Link 
-              href="/ds" 
-              className={getMobileLinkClasses('/ds')}
+              href="/design-studio" 
+              className={getMobileLinkClasses('/design-studio')}
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: '300ms' }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
+              <PencilIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">Design Studio</span>
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+            </Link>
+            <hr className="border-2 border-white/20" />
+            <Link 
+              href="/locations" 
+              className={getMobileLinkClasses('/locations')}
+              onClick={() => setMenuOpen(false)}
+              style={{ animationDelay: '400ms' }}
+            >
+              <MapPinIcon className="w-5 h-5 mr-1 inline" />
+              <span className="relative z-10">Locations</span>
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
           </div>

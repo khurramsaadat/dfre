@@ -23,7 +23,7 @@ type Position = {
   y: number;
 };
 
-export default function DS() {
+export default function DesignStudio() {
   const [currentBox, setCurrentBox] = useState<keyof BoxState | null>(null);
   const [dragTarget, setDragTarget] = useState<keyof BoxState | null>(null);
   const [dsImageName, setDsImageName] = useState('');
