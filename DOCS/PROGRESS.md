@@ -10,4 +10,5 @@
 - Added icons to all navbar links (desktop and mobile).
 - Added Copy and Share buttons to each location card on Locations page.
 - Fixed Locations page to be a Client Component by adding 'use client' directive.
-- Investigated '__Nc' error; determined it is not from project codebase but likely from a third-party script or browser extension. 
+- Investigated '__Nc' error; determined it is not from project codebase but likely from a third-party script or browser extension.
+- Updated DFRE Schedule card link on homepage to /design-studio for consistency with navbar and footer. 

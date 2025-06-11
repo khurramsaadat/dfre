@@ -372,6 +372,7 @@ All notable changes to this project will be documented in this file.
 - Added Copy and Share buttons to each location card on Locations page.
 - Fixed Locations page to be a Client Component by adding 'use client' directive.
 - Investigated '__Nc' error; determined it is not from project codebase but likely from a third-party script or browser extension.
+- Updated DFRE Schedule card link on homepage to point to /design-studio instead of /ds for consistency with navbar and footer.
 
 ## 2024-06-09
 - Created DOCS folder and initialized PROGRESS.md, CHANGELOG.md, and INPUTS.md as per project rules.

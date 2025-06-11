@@ -23,7 +23,7 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
       title: "DFRE Schedule",
       description: "Design Studio layouts",
       imageUrl: "/images/card3.jpg",
-      href: "/ds"
+      href: "/design-studio"
     }
   ];
 
@@ -37,7 +37,6 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
             </h1>
             <p className="text-xl mb-8">
               A modern, responsive website built with Next.js and Tailwind CSS.
-              Start building something amazing today.
             </p>
           </div>
         )}
