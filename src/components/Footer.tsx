@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import GearIcon from './GearIcon';
 import { usePathname } from 'next/navigation';
+import { HomeIcon, BuildingOffice2Icon, DocumentTextIcon, PencilIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 const Footer = () => {
   const pathname = usePathname();
@@ -32,25 +33,49 @@ const Footer = () => {
             <h3 className="text-sm font-bold mb-4 text-white">QUICK LINKS</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className={getLinkClasses('/')}>
-                  Home
+                <Link
+                  href="/"
+                  className={`inline-flex items-center text-sm transition-colors relative after:absolute after:bottom-[-8px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-[100%] after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 ${pathname === '/' ? 'after:scale-x-100 text-white' : 'after:scale-x-0 text-gray-300 hover:text-white'}`}
+                  style={{ display: 'inline-flex' }}
+                >
+                  <HomeIcon className="w-4 h-4 mr-1" aria-hidden="true" /> Home
                 </Link>
               </li>
               <li>
-                <Link href="/dm6assets" className={getLinkClasses('/dm6assets')}>
-                  DM 6 Assets
+                <Link
+                  href="/dm6assets"
+                  className={`inline-flex items-center text-sm transition-colors relative after:absolute after:bottom-[-8px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-[100%] after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 ${pathname === '/dm6assets' ? 'after:scale-x-100 text-white' : 'after:scale-x-0 text-gray-300 hover:text-white'}`}
+                  style={{ display: 'inline-flex' }}
+                >
+                  <BuildingOffice2Icon className="w-4 h-4 mr-1" aria-hidden="true" /> DM 6 Assets
                 </Link>
               </li>
               <li>
-                <Link href="/dm3assets" className={getLinkClasses('/dm3assets')}>
-                  DM 3 Assets
+                <Link
+                  href="/dm3assets"
+                  className={`inline-flex items-center text-sm transition-colors relative after:absolute after:bottom-[-8px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-[100%] after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 ${pathname === '/dm3assets' ? 'after:scale-x-100 text-white' : 'after:scale-x-0 text-gray-300 hover:text-white'}`}
+                  style={{ display: 'inline-flex' }}
+                >
+                  <DocumentTextIcon className="w-4 h-4 mr-1" aria-hidden="true" /> DM 3 Assets
                 </Link>
               </li>
               <li>
-                <Link href="/design-studio" className={getLinkClasses('/design-studio')}>Design Studio</Link>
+                <Link
+                  href="/design-studio"
+                  className={`inline-flex items-center text-sm transition-colors relative after:absolute after:bottom-[-8px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-[100%] after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 ${pathname === '/design-studio' ? 'after:scale-x-100 text-white' : 'after:scale-x-0 text-gray-300 hover:text-white'}`}
+                  style={{ display: 'inline-flex' }}
+                >
+                  <PencilIcon className="w-4 h-4 mr-1" aria-hidden="true" /> Design Studio
+                </Link>
               </li>
               <li>
-                <Link href="/locations" className={getLinkClasses('/locations')}>Locations</Link>
+                <Link
+                  href="/locations"
+                  className={`inline-flex items-center text-sm transition-colors relative after:absolute after:bottom-[-8px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-[100%] after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 ${pathname === '/locations' ? 'after:scale-x-100 text-white' : 'after:scale-x-0 text-gray-300 hover:text-white'}`}
+                  style={{ display: 'inline-flex' }}
+                >
+                  <MapPinIcon className="w-4 h-4 mr-1" aria-hidden="true" /> Locations
+                </Link>
               </li>
             </ul>
           </div>
@@ -65,8 +90,8 @@ const Footer = () => {
                   khurram.saadat@yahoo.com
                 </a>
               </li>
-              <li>Falconcity of wonders, Dubailand</li>
-              <li>Dubai, UAE</li>
+              <li>Dubai</li>
+              <li>United Arab Emirates</li>
             </ul>
           </div>
           <div>

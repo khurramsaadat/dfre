@@ -368,16 +368,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2024-06-09
 ### Changed
-- Added icons to all navbar links (desktop and mobile).
-- Added Copy and Share buttons to each location card on Locations page.
-- Fixed Locations page to be a Client Component by adding 'use client' directive.
-- Investigated '__Nc' error; determined it is not from project codebase but likely from a third-party script or browser extension.
-- Updated DFRE Schedule card link on homepage to point to /design-studio instead of /ds for consistency with navbar and footer.
+- Reduced navbar link and icon size on desktop to match footer links (`text-sm`, `w-4 h-4`).
+- Added 8px gap between navbar link text and underline (active/hover indicator) on desktop only.
+- Added Heroicons to all footer QUICK LINKS, matching navbar icons.
+- Footer QUICK LINKS underline now appears only on hover and for active link, matching navbar behavior.
+- Underline in footer QUICK LINKS now appears under both icon and text, not just text.
+- Increased gap between footer quick link text/icon and underline to 8px, made underline 70% width and centered.
+- Forced footer QUICK LINKS font size to `text-sm` for all screen sizes to match navbar links.
 
-## 2024-06-09
-- Created DOCS folder and initialized PROGRESS.md, CHANGELOG.md, and INPUTS.md as per project rules.
-- Baseline project directory structure:
-
+### Folder Structure
 ```
 dfre/
   public/

@@ -33,7 +33,7 @@ const Header = () => {
   }, [menuOpen]);
 
   const getLinkClasses = (path: string) => {
-    const baseClasses = "transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100";
+    const baseClasses = "transition-colors relative after:absolute after:bottom-0 md:after:bottom-[-8px] after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:bg-white after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100";
     const isActive = pathname === path;
     return `${baseClasses} ${isActive ? 'text-white after:scale-x-100' : 'text-gray-300 after:scale-x-0 hover:text-white'}`;
   };
@@ -60,20 +60,25 @@ const Header = () => {
             </Link>
           </div>
           <div className="hidden md:flex space-x-8">
-            <Link href="/" className={getLinkClasses('/')}>
-              <HomeIcon className="w-5 h-5 mr-1 inline" /> Home
+            <Link href="/" className={getLinkClasses('/') + ' text-sm'}>
+              <HomeIcon className="w-4 h-4 mr-1 inline" />
+              <span className="relative z-10">Home</span>
             </Link>
-            <Link href="/dm6assets" className={getLinkClasses('/dm6assets')}>
-              <BuildingOffice2Icon className="w-5 h-5 mr-1 inline" /> DM 6 Assets
+            <Link href="/dm6assets" className={getLinkClasses('/dm6assets') + ' text-sm'}>
+              <BuildingOffice2Icon className="w-4 h-4 mr-1 inline" />
+              <span className="relative z-10">DM 6 Assets</span>
             </Link>
-            <Link href="/dm3assets" className={getLinkClasses('/dm3assets')}>
-              <DocumentTextIcon className="w-5 h-5 mr-1 inline" /> DM 3 Assets
+            <Link href="/dm3assets" className={getLinkClasses('/dm3assets') + ' text-sm'}>
+              <DocumentTextIcon className="w-4 h-4 mr-1 inline" />
+              <span className="relative z-10">DM 3 Assets</span>
             </Link>
-            <Link href="/design-studio" className={getLinkClasses('/design-studio')}>
-              <PencilIcon className="w-5 h-5 mr-1 inline" /> Design Studio
+            <Link href="/design-studio" className={getLinkClasses('/design-studio') + ' text-sm'}>
+              <PencilIcon className="w-4 h-4 mr-1 inline" />
+              <span className="relative z-10">Design Studio</span>
             </Link>
-            <Link href="/locations" className={getLinkClasses('/locations')}>
-              <MapPinIcon className="w-5 h-5 mr-1 inline" /> Locations
+            <Link href="/locations" className={getLinkClasses('/locations') + ' text-sm'}>
+              <MapPinIcon className="w-4 h-4 mr-1 inline" />
+              <span className="relative z-10">Locations</span>
             </Link>
           </div>
           <button
@@ -98,7 +103,6 @@ const Header = () => {
             >
               <HomeIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">Home</span>
-              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
             <Link 
@@ -109,7 +113,6 @@ const Header = () => {
             >
               <BuildingOffice2Icon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">DM 6 Assets</span>
-              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
             <Link 
@@ -120,7 +123,6 @@ const Header = () => {
             >
               <DocumentTextIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">DM 3 Assets</span>
-              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
             <Link 
@@ -131,7 +133,6 @@ const Header = () => {
             >
               <PencilIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">Design Studio</span>
-              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
             <hr className="border-2 border-white/20" />
             <Link 
@@ -142,7 +143,6 @@ const Header = () => {
             >
               <MapPinIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">Locations</span>
-              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
           </div>
         </div>

@@ -12,9 +12,8 @@ alwaysApply: true
   - All changelogs and documentation must use verified current dates
   - Format dates consistently as YYYY-MM-DD
 - I am using windows 11 and my IDE is a Cursor AI.
-- Do not use && and use ; instead to avoid PowerShell syntax error.
 - use playwright MCP server, it is added in the settings/mcp servers.
-- Create a folder on root - name it DOCS and make these files in it: PROGRESS.md, CHANGELOG.md and INPUTS.md.
+- Create a folder on root - name it DOCS and make these files in it: PROGRESS.md, CHANGELOG.md and INPUTS.md
 - update CHANGELOG.md with each session's changes, including dates, specific changes and any important notes, track all modifications, document any configuration changes and keep a record of all commands used. Also make and maintain directory and file structure in it.
 - Document any recurring issues and their solutions in CHANGELOG.md
 - Make README.md if missing and populate it with the nesessory information. Avoid giving personal/private info.
@@ -54,4 +53,42 @@ alwaysApply: true
 - Git is main not master.
 - When user mention "save" please update CHANGELOG.md, PROGRESS.md, INPUTS.md and include folder structure including files and push all codes and files to Git and GitHub.
 - Before pushing to GitHub (especially when using the "save" command), always run a full type check (npx tsc --noEmit). This is - enforced by a Husky pre-push hook. If any type errors are found, fix them before pushing.
+- Always use ; instead of && for chaining shell commands, especially in Windows environments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
