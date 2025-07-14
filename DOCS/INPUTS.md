@@ -18,9 +18,3 @@ _Log all user inputs here with timestamps (YYYY-MM-DD HH:mm) as per project rule
 - User requested footer quick links font size to match navbar (text-sm).
 - User requested Playwright checks for font size consistency.
 - User confirmed all changes and requested save. 
-
-2024-07-14:
-- User reported issue with PDF output in DM6AssetsHeroLayout component.
-- User requested promo details in PDF to align with the right edge of the red box.
-- User requested both promo path and link to be clickable and point to the link address.
-- User confirmed changes and requested save. 

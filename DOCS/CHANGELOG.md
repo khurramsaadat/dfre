@@ -398,22 +398,3 @@ dfre/
   tailwind.config.js
   tsconfig.json
 ``` 
-
-## [0.2.2] - 2024-07-14
-
-### Enhanced
-- Improved PDF output in DM6AssetsHeroLayout component:
-  - Fixed alignment of promo details in PDF output to match the visual display
-  - Made promo path and link clickable in both the PDF and visual display
-  - Added proper URL formatting with http/https prefix for links
-  - Increased font size for better readability in PDF output
-  - Adjusted vertical positioning of promo details to match the visual display
-  - Added proper link annotations in PDF for interactive documents
-
-### Technical Details
-- Updated jsPDF implementation to include clickable links
-- Used pdf.link() method to create interactive areas in the PDF
-- Added URL validation and formatting to ensure proper link functionality
-- Enhanced visual display with anchor tags for consistent experience
-- Maintained consistent positioning between PDF and visual display
-- Improved text alignment for better readability 

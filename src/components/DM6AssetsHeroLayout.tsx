@@ -602,7 +602,7 @@ export default function DM6AssetsHeroLayout() {
             transform: 'translateX(-50%)', 
             zIndex: 20, 
             background: 'rgba(255,255,255,0.8)', 
-            borderRadius: 12, 
+            borderRadius: 13, 
             boxShadow: '0 2px 8px rgba(0,0,0,0.08)', 
             padding: '12px 18px', 
             display: 'flex', 

@@ -64,9 +64,10 @@ error related to escaping characters.
 - Before you writing any code read these rules and after that mention "understood Khurram's rules"
 - For configuration errors (like next.config.ts), address them before proceeding with feature work.
 - Git is main not master.
+- Use semicolons instead of && for all terminal commands.
+- Always use ; instead of && for chaining shell commands, especially in Windows environments.
 - When user mention "save" please update CHANGELOG.md, PROGRESS.md, INPUTS.md and include folder structure including files and push all codes and files to Git and GitHub.
 - Before pushing to GitHub (especially when using the "save" command), always run a full type check (npx tsc --noEmit). This is - enforced by a Husky pre-push hook. If any type errors are found, fix them before pushing.
-- Always use ; instead of && for chaining shell commands, especially in Windows environments.
 - we will deploy this website on netlify.com - Refer to its documents that I have added in the settings. You should also make a tmol file to make it deploy ready.# Your rule content
 - When I set agent to AUTO, in your reply mention the agent's name or model's name that was used for reply the code or answer.
 - Always give me full path so i can update your code.
