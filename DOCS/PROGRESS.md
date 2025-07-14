@@ -18,3 +18,13 @@
 - Footer underline now matches navbar (hover/active, under icon+text, gap, width).
 - Forced footer quick links font size to text-sm.
 - User confirmed all changes and requested save. 
+
+## 2024-07-14
+- Fixed alignment issues with promo details in PDF output of DM6AssetsHeroLayout component.
+- Made promo path and link clickable in both the PDF and visual display:
+  - Added proper URL formatting with http/https prefix
+  - Implemented PDF link annotations for interactive documents
+  - Added anchor tags in the visual display for consistent experience
+- Adjusted font size and positioning for better readability in PDF output.
+- Maintained consistent positioning between PDF and visual display.
+- Updated the CHANGELOG.md, INPUTS.md, and PROGRESS.md files to document the changes. 

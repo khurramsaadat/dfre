@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import jsPDF from 'jspdf';
 
 type Box = {
   width: number;
@@ -27,7 +28,11 @@ export default function DM6AssetsHeroLayout() {
   const [boxes, setBoxes] = useState<Box[]>(boxesConfig.map(box => ({ ...box, image: undefined })));
   const [currentBoxIndex, setCurrentBoxIndex] = useState<number | null>(null);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
-  const [labelText, setLabelText] = useState('');
+  const [labelText, setLabelText] = useState('DFRE Promo');
+  // Add new state for promo details
+  const [promoSchedule, setPromoSchedule] = useState('');
+  const [promoPath, setPromoPath] = useState('');
+  const [linkInfo, setLinkInfo] = useState(''); // Renamed from serverInfo to linkInfo
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<HTMLDivElement>(null);
@@ -181,6 +186,191 @@ export default function DM6AssetsHeroLayout() {
     }
   };
 
+  // Save PDF functionality
+  const handleSavePDF = async () => {
+    if (layoutRef.current) {
+      // Hide controls and add white border for capture
+      const controlsOverlay = layoutRef.current.querySelector('.controls-overlay');
+      const boxEls = layoutRef.current.querySelectorAll('.box-border');
+      const imageSizeInfo = layoutRef.current.querySelectorAll('.image-size-info');
+      
+      // Also hide the date and promo title for the canvas capture
+      const dateAndTitleContainer = layoutRef.current.querySelector('[data-date-title-container]');
+      const promoDetailsContainer = layoutRef.current.querySelector('[data-promo-details]');
+      
+      if (controlsOverlay) {
+        (controlsOverlay as HTMLElement).style.display = 'none';
+      }
+      
+      if (dateAndTitleContainer) {
+        (dateAndTitleContainer as HTMLElement).style.display = 'none';
+      }
+
+      if (promoDetailsContainer) {
+        (promoDetailsContainer as HTMLElement).style.display = 'none';
+      }
+      
+      boxEls.forEach((box: Element) => {
+        (box as HTMLElement).style.border = 'none';
+      });
+
+      imageSizeInfo.forEach((info: Element) => {
+        (info as HTMLElement).style.display = 'none';
+      });
+
+      try {
+        const html2canvas = (await import('html2canvas')).default;
+        const canvas = await html2canvas(layoutRef.current, {
+          scale: 1,
+          backgroundColor: backgroundColor,
+          width: layoutWidth,
+          height: layoutHeight,
+          logging: false,
+          windowWidth: layoutWidth,
+          windowHeight: layoutHeight,
+          x: 0,
+          y: 0,
+          useCORS: true,
+          allowTaint: true,
+          onclone: (clonedDoc) => {
+            const clonedElement = clonedDoc.querySelector('[data-layout-ref]') as HTMLElement;
+            if (clonedElement) {
+              clonedElement.style.transform = 'none';
+              clonedElement.style.width = layoutWidth + 'px';
+              clonedElement.style.height = layoutHeight + 'px';
+              clonedElement.style.border = '5px solid white';
+            }
+          }
+        });
+
+        // Restore controls and borders
+        if (controlsOverlay) {
+          (controlsOverlay as HTMLElement).style.display = 'flex';
+        }
+        
+        if (dateAndTitleContainer) {
+          (dateAndTitleContainer as HTMLElement).style.display = 'block';
+        }
+
+        if (promoDetailsContainer) {
+          (promoDetailsContainer as HTMLElement).style.display = 'block';
+        }
+        
+        boxEls.forEach((box: Element) => {
+          (box as HTMLElement).style.border = '';
+        });
+        
+        imageSizeInfo.forEach((info: Element) => {
+          (info as HTMLElement).style.display = '';
+        });
+
+        // Create PDF with custom fonts
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        
+        // Create a new PDF with appropriate dimensions
+        const pdf = new jsPDF({
+          orientation: 'landscape',
+          unit: 'px',
+          format: [layoutWidth, layoutHeight],
+          hotfixes: ['px_scaling']
+        });
+        
+        // Add the background image first
+        pdf.addImage(imgData, 'JPEG', 0, 0, layoutWidth, layoutHeight);
+        
+        // Get the current date text
+        const currentDateText = getCurrentDate();
+        
+        // Add date as selectable text (white color)
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(16);
+        pdf.text(currentDateText, 228, 170);
+        
+        // Calculate the width needed for the title text
+        // Ensure it's at least 400px wide to accommodate longer titles
+        const titleWidth = Math.max(400, pdf.getStringUnitWidth(labelText) * pdf.getFontSize());
+        const titleHeight = 40;
+        
+        // Add promo title as selectable text (black color on white background)
+        // First add a white rectangle for the background - with increased width
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(228, 190, titleWidth, titleHeight, 'F');
+        
+        // Then add the text
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFontSize(16);
+        
+        // Split long text into multiple lines if needed
+        const splitTitle = pdf.splitTextToSize(labelText, titleWidth - 20); // 10px padding on each side
+        pdf.text(splitTitle, 230, 210);
+        
+        // Add promo details in the lower right corner
+        pdf.setFontSize(10); // Smaller font size for details
+        pdf.setTextColor(255, 255, 255); // White text color
+        
+        // Calculate right-aligned position - align with the red box (right edge)
+        const rightMargin = 200; // Match the right: 200 from the HTML layout
+        const rightX = layoutWidth - rightMargin;
+        let yPosition = layoutHeight - 100; // Starting Y position for details
+        
+        // Add promo schedule if provided
+        if (promoSchedule) {
+          pdf.text(`Promo Schedule: ${promoSchedule}`, rightX, yPosition, { align: 'right' });
+          yPosition += 15; // Move down for next line
+        }
+        
+        // Add promo path if provided with clickable link
+        if (promoPath) {
+          // First add the text
+          pdf.text(`Promo Path: ${promoPath}`, rightX, yPosition, { align: 'right' });
+          
+          // Then make it clickable if linkInfo exists
+          if (linkInfo) {
+            // Calculate text width to determine link area
+            const textWidth = pdf.getStringUnitWidth(`Promo Path: ${promoPath}`) * pdf.getFontSize();
+            // Add link annotation (URL must start with http:// or https://)
+            const linkUrl = linkInfo.startsWith('http') ? linkInfo : `https://${linkInfo}`;
+            pdf.link(rightX - textWidth, yPosition - 10, textWidth, 15, { url: linkUrl });
+          }
+          
+          yPosition += 15; // Move down for next line
+        }
+        
+        // Add link info if provided (renamed from server) with clickable link
+        if (linkInfo) {
+          // First add the text
+          pdf.text(`Link: ${linkInfo}`, rightX, yPosition, { align: 'right' });
+          
+          // Then make it clickable
+          // Calculate text width to determine link area
+          const textWidth = pdf.getStringUnitWidth(`Link: ${linkInfo}`) * pdf.getFontSize();
+          // Add link annotation (URL must start with http:// or https://)
+          const linkUrl = linkInfo.startsWith('http') ? linkInfo : `https://${linkInfo}`;
+          pdf.link(rightX - textWidth, yPosition - 10, textWidth, 15, { url: linkUrl });
+        }
+        
+        // Download the PDF
+        const fileName = labelText ? `DM_Approval_${labelText}` : 'DM_Approval_layout';
+        pdf.save(`${fileName}.pdf`);
+        
+        console.log('PDF generated with selectable text:', {
+          date: currentDateText,
+          promoTitle: labelText,
+          titleWidth: titleWidth,
+          datePosition: { x: 228, y: 170 },
+          titlePosition: { x: 230, y: 210 },
+          promoDetails: {
+            schedule: promoSchedule,
+            path: promoPath,
+            link: linkInfo // Renamed from server to link
+          }
+        });
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+      }
+    }
+  };
+
   // Date display
   const getCurrentDate = () => {
     const date = new Date();
@@ -233,22 +423,70 @@ export default function DM6AssetsHeroLayout() {
         }}
       >
         {/* Label Text and Date */}
-        <div style={{ position: 'absolute', left: 228, top: 150, zIndex: 10 }}>
-          {labelText && (
-            <div style={{
-              fontSize: 20,
-              background: '#fff',
-              border: '1px solid #ccc',
-              padding: '1px 1px',
-              paddingBottom: '20px',
-              marginBottom: 8
-            }}>
-              {labelText}
-            </div>
-          )}
-          <div style={{ fontSize: 20, fontFamily: 'Arial', fontWeight: 600, color: '#fff' }}>
+        <div 
+          data-date-title-container
+          style={{ position: 'absolute', left: 228, top: 150, zIndex: 10 }}
+        >
+          {/* Date first (on top) */}
+          <div style={{ fontSize: 20, fontFamily: 'Arial', fontWeight: 600, color: '#fff', marginBottom: 8 }}>
             {getCurrentDate()}
           </div>
+          
+          {/* Promo title below date */}
+          <div style={{
+            fontSize: 20,
+            background: '#fff',
+            border: '1px solid #ccc',
+            padding: '1px 1px',
+            paddingBottom: '10px'
+          }}>
+            {labelText}
+          </div>
+        </div>
+
+        {/* Promo Details - positioned to align with the red box */}
+        <div
+          data-promo-details
+          style={{
+            position: 'absolute',
+            right: 200, // Aligned with the right edge of the red box
+            bottom: 25,  // Close to the bottom
+            zIndex: 10,
+            color: '#fff',
+            fontSize: 14,
+            fontFamily: 'Arial',
+            textAlign: 'right'
+          }}
+        >
+          {promoSchedule && (
+            <div style={{ marginBottom: 5 }}>Promo Schedule: {promoSchedule}</div>
+          )}
+          {promoPath && (
+            <div style={{ marginBottom: 5 }}>
+              Promo Path: {linkInfo ? (
+                <a 
+                  href={linkInfo.startsWith('http') ? linkInfo : `https://${linkInfo}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#fff', textDecoration: 'underline' }}
+                >
+                  {promoPath}
+                </a>
+              ) : promoPath}
+            </div>
+          )}
+          {linkInfo && (
+            <div>
+              Link: <a 
+                href={linkInfo.startsWith('http') ? linkInfo : `https://${linkInfo}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#fff', textDecoration: 'underline' }}
+              >
+                {linkInfo}
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Boxes */}
@@ -354,37 +592,119 @@ export default function DM6AssetsHeroLayout() {
           accept="image/*"
           onChange={handleFileChange}
         />
-        {/* Controls Overlayed at Bottom Center */}
+        {/* Controls Overlayed at Bottom Center - Reorganized for more compact height */}
         <div
           className="controls-overlay"
-          style={{ position: 'absolute', left: '50%', bottom: 32, transform: 'translateX(-50%)', zIndex: 20, background: 'rgba(255,255,255,0.8)', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 16 }}
+          style={{ 
+            position: 'absolute', 
+            left: '50%', 
+            bottom: 15,
+            transform: 'translateX(-50%)', 
+            zIndex: 20, 
+            background: 'rgba(255,255,255,0.8)', 
+            borderRadius: 12, 
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)', 
+            padding: '12px 18px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 12, 
+            flexWrap: 'wrap', 
+            width: '850px'
+          }}
         >
-          <input
-            type="text"
-            value={labelText}
-            onChange={e => setLabelText(e.target.value)}
-            placeholder="Enter text here"
-            style={{ padding: '8px 16px', border: '1px solid #ccc', borderRadius: 8, fontSize: 16, marginRight: 8 }}
-          />
-          <input
-            type="color"
-            value={backgroundColor}
-            onChange={e => setBackgroundColor(e.target.value)}
-            style={{ width: 48, height: 48, borderRadius: 8, cursor: 'pointer', marginRight: 8 }}
-          />
-          <span style={{ color: '#333', fontSize: 16, marginRight: 8 }}>Background Color</span>
-          <button
-            onClick={handleCaptureImage}
-            style={{ padding: '8px 24px', background: '#0070f3', color: '#fff', borderRadius: 8, border: 'none', fontWeight: 600, fontSize: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
-          >
-            <svg width={20} height={20} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Capture Image
-          </button>
+          {/* First row - Title and Promo Schedule on same line */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', marginBottom: 12 }}>
+            {/* Promo Title */}
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <label htmlFor="labelText" style={{ fontSize: 16, marginBottom: 3, color: '#333', fontWeight: 600 }}>Promo Title:</label>
+              <input
+                id="labelText"
+                type="text"
+                value={labelText}
+                onChange={e => setLabelText(e.target.value)}
+                placeholder="Enter promo title"
+                style={{ padding: '6px 12px', border: '1px solid #ccc', borderRadius: 6, fontSize: 16 }}
+              />
+            </div>
+            
+            {/* Promo Schedule */}
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <label htmlFor="promoSchedule" style={{ fontSize: 16, marginBottom: 3, color: '#333', fontWeight: 600 }}>Promo Schedule:</label>
+              <input
+                id="promoSchedule"
+                type="text"
+                value={promoSchedule}
+                onChange={e => setPromoSchedule(e.target.value)}
+                placeholder="Enter promo schedule"
+                style={{ padding: '6px 12px', border: '1px solid #ccc', borderRadius: 6, fontSize: 16 }}
+              />
+            </div>
+            
+            {/* Background Color */}
+            <div style={{ display: 'flex', flexDirection: 'column', width: '120px' }}>
+              <label htmlFor="backgroundColor" style={{ fontSize: 16, marginBottom: 3, color: '#333', fontWeight: 600 }}>BG Color:</label>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                  id="backgroundColor"
+                  type="color"
+                  value={backgroundColor}
+                  onChange={e => setBackgroundColor(e.target.value)}
+                  style={{ width: 36, height: 36, borderRadius: 6, cursor: 'pointer' }}
+                />
+              </div>
+            </div>
+          </div>
+          
+          {/* Second row - Promo Path */}
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 8 }}>
+            <label htmlFor="promoPath" style={{ fontSize: 16, marginBottom: 3, color: '#333', fontWeight: 600 }}>Promo Path:</label>
+            <input
+              id="promoPath"
+              type="text"
+              value={promoPath}
+              onChange={e => setPromoPath(e.target.value)}
+              placeholder="Enter promo path"
+              style={{ padding: '6px 12px', border: '1px solid #ccc', borderRadius: 6, fontSize: 16 }}
+            />
+          </div>
+          
+          {/* Third row - Link */}
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 12 }}>
+            <label htmlFor="linkInfo" style={{ fontSize: 16, marginBottom: 3, color: '#333', fontWeight: 600 }}>DMS Link:</label>
+            <input
+              id="linkInfo"
+              type="text"
+              value={linkInfo}
+              onChange={e => setLinkInfo(e.target.value)}
+              placeholder="Enter link info"
+              style={{ padding: '6px 12px', border: '1px solid #ccc', borderRadius: 6, fontSize: 16 }}
+            />
+          </div>
+          
+          {/* Fourth row - buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', justifyContent: 'center' }}>
+            <button
+              onClick={handleCaptureImage}
+              style={{ padding: '6px 18px', background: '#0070f3', color: '#fff', borderRadius: 6, border: 'none', fontWeight: 600, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, marginRight: 6 }}
+            >
+              <svg width={16} height={16} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Capture Image
+            </button>
+            <button
+              onClick={handleSavePDF}
+              style={{ padding: '6px 18px', background: '#e53e3e', color: '#fff', borderRadius: 6, border: 'none', fontWeight: 600, fontSize: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+            >
+              <svg width={20} height={20} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Save PDF
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
-} 
+}
