@@ -378,23 +378,177 @@ All notable changes to this project will be documented in this file.
 
 ### Folder Structure
 ```
-dfre/
+dfre-layout-factory/
+  DOCS/
+    CHANGELOG.md
+    INPUTS.md
+    PROGRESS.md
   public/
     images/
+      card1.jpg
+      card2.jpg
+      card3.jpg
+      gear.png
+      facebook_icon.svg
+      instagram_icon.svg
+      linkedin_icon.svg
+      messenger_icon.svg
+      pinterest_icon.svg
+      reddit_icon.svg
+      tiktok_icon.svg
+      x.svg
+      youtube_icon.svg
+    apple-touch-icon.png
+    favicon-16x16.png
+    favicon-32x32.png
+    favicon.ico
   src/
     app/
+      design-studio/
+        page.tsx
       dm3assets/
+        page.tsx
       dm6assets/
-      ds/
+        page.tsx
+      locations/
+        page.tsx
+      globals.css
+      layout.tsx
+      page.tsx
     components/
+      DesignStudioCanvas.module.css
+      DesignStudioCanvas.tsx
+      DM3AssetsHeroLayout.tsx
+      DM6AssetsHeroLayout.tsx
+      FeatureCard.tsx
+      Footer.tsx
+      GearIcon.css
+      GearIcon.tsx
+      Header.tsx
+      Hero.tsx
+      Typewriter.tsx
     types/
+      global.d.ts
     utils/
-  CHANGELOG.md
+      share.ts
   netlify.toml
+  next-env.d.ts
   package-lock.json
   package.json
   postcss.config.js
   README.md
   tailwind.config.js
   tsconfig.json
-``` 
+  tsconfig.tsbuildinfo
+```
+
+## [0.2.3] - 2024-11-20
+
+### Added
+- Complete PDF generation system for DFRE Pole Locations
+  - Interactive cover page with clickable table of contents
+  - 7 location pages with actual map images (JPG format)
+  - Professional styling with consistent warm orange color scheme
+  - All text selectable for copy/paste
+  - All links and maps clickable
+  - Internal page links for easy navigation
+
+### Changed  
+- Final spacing adjustments: 30mm gap between Google Maps Link and Location Map Preview
+- Unified color scheme: All info boxes use warm orange background (#FFF7ED) with golden borders (#FBC02D)
+- Layout reorganization: Google Maps Link → Map Preview → Coordinates
+- Removed all emojis to prevent strange characters in PDF
+- Changed all text colors from blue to dark grey (#374151)
+
+### Fixed
+- Overlap issue between Google Maps Link and Location Map Preview
+- Map preview border added for clear definition
+- Spacing above coordinates section (16mm from header)
+
+## [0.2.2] - 2024-11-20
+
+### Added
+- **Multi-page PDF functionality to Locations page** with cover page and advanced features
+  - Added "Print PDF" button at top right of page header
+  - Integrated jsPDF and html2canvas libraries for professional PDF generation
+  - Generates **ONE PDF with multiple pages** (8 pages total: 1 cover + 7 locations):
+    - **Page 1**: Cover/Index page with "DFRE Pole Locations" title, table of contents, and document information
+    - **Pages 2-8**: Each location on a separate page with location name as header
+    - Each location page shows location-specific title (e.g., "Pole: Al Garhoud")
+    - Professional white background with modern styling
+    - Location name and all coordinate formats (decimal, DMS, short)
+    - Google Maps link section with clickable links
+    - Embedded map preview captured from iframe
+    - Generation timestamp with date and time
+    - Page numbering (Page X of Y format)
+    - Filename format: `dfre-pole-locations-YYYY-MM-DD.pdf`
+  
+  - **Advanced PDF Features**:
+    - ✅ **Cover page with table of contents** - Complete index of all locations with page numbers
+    - ✅ **Document information box** - Shows total locations, pages, and generation date on cover
+    - ✅ **Selectable text** - All text in PDF can be selected and copied for easy use
+    - ✅ **Clickable hyperlinks** - Google Maps URLs are clickable and open in browser
+    - ✅ **Clickable map images** - Map previews are clickable hotspots that open Google Maps
+    - ✅ **PDF metadata** - Proper document properties (title, subject, author, keywords, creator)
+    - ✅ **Professional pagination** - Each page numbered with total page count (Page X of Y)
+    - ✅ **Dynamic headers** - Cover page shows main title, location pages show location names
+    - ✅ **Footer disclaimers** - Professional footer on all pages
+    - ✅ **Clean text** - Removed emoji characters for professional appearance
+  
+  - **PDF Styling Features**:
+    - Clean, printer-friendly white background
+    - Color-coded sections for better readability:
+      - Orange header bar for branding on all pages
+      - Gray background for coordinates section
+      - Yellow background for Google Maps link section
+      - Light gray box for document information on cover
+    - Professional typography with Helvetica font family
+    - Proper margins and spacing (15mm margins)
+    - Border decorations and visual separators
+    - High-quality map images with improved rendering (1200x600px capture size)
+    - Map preview border for clear definition
+  
+  - **User Experience Enhancements**:
+    - Loading state indicator on button ("Generating PDF...")
+    - Disabled button state during PDF generation
+    - Smooth async processing for all locations
+    - Error handling with user-friendly alerts
+    - 3-second iframe loading delay per map for quality capture
+    - Improved map rendering with larger capture dimensions
+    - Foreign object rendering enabled for better iframe capture
+  
+  - Added PrinterIcon from Heroicons for intuitive button UI
+
+### Technical Details
+- Implemented single-document multi-page PDF generation using jsPDF native text functions
+- Used jsPDF text rendering instead of image-based approach for selectable text
+- Leveraged `pdf.textWithLink()` for clickable hyperlinks in PDF
+- Leveraged `pdf.link()` for clickable map image regions
+- Configured PDF document properties using `pdf.setProperties()`
+- Created temporary DOM containers for map iframe capture per location
+- Used html2canvas with CORS support and high-quality scaling (scale: 2) for map images only
+- Configured jsPDF with A4 page size in portrait orientation
+- Implemented dynamic page layout calculation to fit content properly
+- Added automatic page breaks with `pdf.addPage()` between locations
+- Proper cleanup of temporary DOM elements after each capture
+- Smart text splitting for long URLs with `pdf.splitTextToSize()`
+- Color management using RGB values for consistent branding
+- Font styling with bold/normal weights and multiple sizes
+
+### Changed
+- Refactored from multiple separate PDFs to single multi-page PDF with cover page
+- Changed button text from "Print PDFs" to "Print PDF"
+- Removed confirmation dialog (no longer needed for single file)
+- Improved filename to include generation date for better file management
+- Enhanced PDF quality by using native text rendering vs image capture
+- Updated page numbering to reflect total pages including cover (Page X of 8 instead of Page X of 7)
+- Changed location page headers from generic "DFRE Pole Locations" to specific location names
+- Removed timestamp from location pages (only shown in cover page document info)
+- Removed emoji characters from clickable link text for professional appearance
+- Increased map capture dimensions from 800x450px to 1200x600px for better quality
+- Extended iframe loading wait time from 2.5s to 3s for more reliable map rendering
+
+### Dependencies Used
+- jspdf: ^3.0.1 (already installed)
+- html2canvas: ^1.4.1 (already installed)
+- @heroicons/react: ^2.2.0 (already installed) 
