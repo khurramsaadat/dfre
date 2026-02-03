@@ -142,4 +142,45 @@
   - Better visual flow with map as central focus
   - Fixed overlap issue: Increased spacing after Google Maps box
   - Final spacing: 30mm (20mm box + 10mm gap) for better visual separation
-  - "Location Map Preview" title now properly positioned below Google Maps Link section with comfortable spacing 
+  - "Location Map Preview" title now properly positioned below Google Maps Link section with comfortable spacing
+- DM6Assets page improvements:
+  - Replaced "Promo Path" input field with "Load Dubai Logos" button
+  - Removed "DMS Link" input field and label completely
+  - Implemented "Load Dubai Logos" functionality that automatically loads Dubai Municipality logo images into all 6 boxes
+  - Button styled with orange color (#ea580c) matching DFRE branding
+  - Button includes image icon and hover effects
+  - Loads logos from public/images folder (card1.jpg, card2.jpg, card3.jpg)
+  - Removed all references to promoPath and linkInfo from PDF generation
+  - Cleaned up promo details section in PDF to only show Promo Schedule
+- Further DM6Assets page cleanup:
+  - Removed "Promo Schedule" input field and label completely
+  - Removed "Save PDF" button and all PDF-related functionality
+  - Removed jsPDF import (no longer needed)
+  - Removed handleSavePDF function and all PDF generation code
+  - Removed promo details display section from layout (data-promo-details)
+  - Simplified controls overlay - now only has Promo Title, BG Color, Load Dubai Logos button, and Capture Image button
+  - Bundle size reduced from 4.47 kB to 3.8 kB (removed PDF dependencies)
+- Dependency updates to latest versions:
+  - Next.js: 14.1.0 → 15.5.11 (major version upgrade)
+  - React: 18.2.0 → 19.2.4 (major version upgrade)
+  - React-DOM: 18.2.0 → 19.2.4 (major version upgrade)
+  - TypeScript: 5.3.3 → 5.8.3 (minor version upgrade)
+  - jsPDF: 3.0.1 → 4.1.0 (major version upgrade with security fixes)
+  - ESLint: 8.56.0 → 9.39.2 (major version upgrade)
+  - eslint-config-next: 14.1.0 → 15.5.11 (matches Next.js version)
+  - @types/node: 20.11.0 → 22.19.7 (major version upgrade)
+  - @types/react: 18.2.0 → 19.2.10 (major version upgrade)
+  - @types/react-dom: 18.2.0 → 19.2.3 (major version upgrade)
+  - autoprefixer: 10.4.17 → 10.4.21 (patch update)
+  - postcss: 8.4.35 → 8.5.3 (minor version upgrade)
+  - tailwindcss: 3.4.1 → 3.4.17 (patch update)
+  - html2canvas: 1.4.1 (already latest)
+  - @heroicons/react: 2.2.0 (already latest)
+  - All dependencies successfully updated and build verified
+- Final dependency update:
+  - Next.js: 15.5.11 → 16.1.6 (latest stable, Active LTS)
+  - eslint-config-next: 15.5.11 → 16.1.6 (matches Next.js version)
+  - Next.js 16 uses Turbopack by default for faster builds
+  - Build successful with Next.js 16.1.6
+  - TypeScript config automatically updated by Next.js 16
+  - All pages compile successfully 

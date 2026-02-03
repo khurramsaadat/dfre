@@ -66,4 +66,25 @@ _Log all user inputs here with timestamps (YYYY-MM-DD HH:mm) as per project rule
   - Fixed spacing: Increased gap from 10mm to 26mm after Google Maps box to prevent overlap
   - User requested more space above "Location Map Preview" text
   - Increased spacing from 26mm to 30mm (20mm box + 10mm gap)
-  - User requested to push all code to GitHub repo 
+  - User requested to push all code to GitHub repo
+
+2024-11-20:
+- User requested changes to dm6assets page:
+  - Replace "Promo Path" input field with a button called "Load Dubai Logos"
+  - Remove "DMS Link" input field and its label
+  - Implemented "Load Dubai Logos" button that loads Dubai Municipality logo images into all boxes
+  - User requested to remove "Promo Schedule" input field and its label
+  - User requested to remove "Save PDF" button and all PDF-related code
+  - Removed jsPDF import and all PDF generation functionality
+  - Removed promo details display section from layout
+- User requested to update all dependencies to latest versions
+  - Updated Next.js from 14.1.0 to 15.5.11
+  - Updated React from 18.2.0 to 19.2.4
+  - Updated React-DOM from 18.2.0 to 19.2.4
+  - Updated TypeScript from 5.3.3 to 5.8.3
+  - Updated jsPDF from 3.0.1 to 4.1.0
+  - Updated all other dependencies to latest versions
+  - Build successful with all updated dependencies
+  - User corrected: Next.js 15.5.11 is not the latest version
+  - Updated to Next.js 16.1.6 (latest stable version)
+  - Updated eslint-config-next to match Next.js 16.1.6 
