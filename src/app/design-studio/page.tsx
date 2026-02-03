@@ -190,6 +190,60 @@ export default function DesignStudio() {
     setAdvPosition(defaultAdvPosition);
   };
 
+  // Load Dubai Logos function - loads specific images to specific boxes
+  const handleLoadDubaiLogos = async () => {
+    // Map images to specific boxes:
+    // box1 (640x360) → 640x360 01.jpg
+    // box2 (1280x720) → 1280x720.jpg
+    // box3 (800x180) → 800x180 01.jpg
+    const imageMapping = [
+      { boxKey: 'box1' as keyof BoxState, imagePath: '/images/640x360 01.jpg' },
+      { boxKey: 'box2' as keyof BoxState, imagePath: '/images/1280x720.jpg' },
+      { boxKey: 'box3' as keyof BoxState, imagePath: '/images/800x180 01.jpg' }
+    ];
+
+    // Load all images in parallel
+    const loadPromises = imageMapping.map(async ({ boxKey, imagePath }) => {
+      try {
+        const img = new window.Image();
+        img.crossOrigin = 'anonymous';
+        
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(img, 0, 0);
+              const imageData = canvas.toDataURL('image/jpeg');
+              setBoxes(prev => ({
+                ...prev,
+                [boxKey]: {
+                  ...prev[boxKey],
+                  image: imageData,
+                  imageSize: {
+                    width: img.width,
+                    height: img.height
+                  }
+                }
+              }));
+              resolve();
+            } else {
+              reject(new Error('Canvas context not available'));
+            }
+          };
+          img.onerror = () => reject(new Error(`Failed to load image: ${imagePath}`));
+          img.src = imagePath;
+        });
+      } catch (error) {
+        console.error(`Error loading logo for ${boxKey}:`, error);
+      }
+    });
+    
+    await Promise.all(loadPromises);
+  };
+
   // Initialize advPosition with default position
   useEffect(() => {
     setAdvPosition(defaultAdvPosition);
@@ -485,6 +539,19 @@ export default function DesignStudio() {
             }}
           >
             <div className="flex flex-col gap-4">
+              {/* Load Dubai Logos Button */}
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={handleLoadDubaiLogos}
+                  title="Load Dubai Municipality logos into all boxes. 640x360 image goes to Box 1, 1280x720 to Box 2, 800x180 to Box 3"
+                  className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 w-full justify-center"
+                >
+                  <svg width={18} height={18} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Load Dubai Logos
+                </button>
+              </div>
               {/* Advertisement No. and Text Color Grouped Vertically */}
               <div className="flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">

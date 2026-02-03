@@ -9,13 +9,13 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
   const features = [
     {
       title: "DM - 6 Assets En & Ar",
-      description: "For Dubai Municipality's approval",
+      description: "For DM Approval",
       imageUrl: "/images/card1.jpg",
       href: "/dm6assets"
     },
     {
       title: "DM - 3 Assets - Arabic only",
-      description: "For Dubai Municipality's approval",
+      description: "For DM Approval",
       imageUrl: "/images/card2.jpg",
       href: "/dm3assets"
     },

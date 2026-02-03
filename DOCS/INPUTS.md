@@ -77,6 +77,18 @@ _Log all user inputs here with timestamps (YYYY-MM-DD HH:mm) as per project rule
   - User requested to remove "Save PDF" button and all PDF-related code
   - Removed jsPDF import and all PDF generation functionality
   - Removed promo details display section from layout
+- User requested UI/UX improvements for dm6assets panel:
+  - Buttons to be blue and text to be white
+  - Improved panel styling with dark background
+  - Enhanced button hover effects and transitions
+  - Updated "Load Dubai Logos" button to load specific images:
+    - "640x360 01.jpg" → Box 1 and Box 4
+    - "800x180 01.jpg" → Box 3 and Box 6
+    - "1280x720.jpg" → Box 2 and Box 5
+- User requested additional improvements:
+  - Add tooltips to all controls in dm6assets panel
+  - Show small preview image of Dubai logo next to "Load Dubai Logos" button
+  - Implement similar controls for dm3assets page with same styling and functionality
 - User requested to update all dependencies to latest versions
   - Updated Next.js from 14.1.0 to 15.5.11
   - Updated React from 18.2.0 to 19.2.4

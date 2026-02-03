@@ -28,6 +28,8 @@ export default function DM6AssetsHeroLayout() {
   const [currentBoxIndex, setCurrentBoxIndex] = useState<number | null>(null);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
   const [labelText, setLabelText] = useState('DFRE Promo');
+  const [isLoadingLogos, setIsLoadingLogos] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<HTMLDivElement>(null);
@@ -116,24 +118,25 @@ export default function DM6AssetsHeroLayout() {
   // Capture functionality
   const handleCaptureImage = async () => {
     if (layoutRef.current) {
-      // Hide controls and add white border for capture
-      const controlsOverlay = layoutRef.current.querySelector('.controls-overlay');
-      const boxEls = layoutRef.current.querySelectorAll('.box-border');
-      const imageSizeInfo = layoutRef.current.querySelectorAll('.image-size-info');
-      
-      if (controlsOverlay) {
-        (controlsOverlay as HTMLElement).style.display = 'none';
-      }
-      
-      boxEls.forEach((box: Element) => {
-        (box as HTMLElement).style.border = 'none';
-      });
-
-      imageSizeInfo.forEach((info: Element) => {
-        (info as HTMLElement).style.display = 'none';
-      });
-
+      setIsCapturing(true);
       try {
+        // Hide controls and add white border for capture
+        const controlsOverlay = layoutRef.current.querySelector('.controls-overlay');
+        const boxEls = layoutRef.current.querySelectorAll('.box-border');
+        const imageSizeInfo = layoutRef.current.querySelectorAll('.image-size-info');
+        
+        if (controlsOverlay) {
+          (controlsOverlay as HTMLElement).style.display = 'none';
+        }
+        
+        boxEls.forEach((box: Element) => {
+          (box as HTMLElement).style.border = 'none';
+        });
+
+        imageSizeInfo.forEach((info: Element) => {
+          (info as HTMLElement).style.display = 'none';
+        });
+
         const html2canvas = (await import('html2canvas')).default;
         const canvas = await html2canvas(layoutRef.current, {
           scale: 1,
@@ -177,6 +180,8 @@ export default function DM6AssetsHeroLayout() {
         link.click();
       } catch (error) {
         console.error('Error capturing image:', error);
+      } finally {
+        setIsCapturing(false);
       }
     }
   };
@@ -209,56 +214,66 @@ export default function DM6AssetsHeroLayout() {
     return Math.abs(r1 - r2) <= tolerance;
   };
 
-  // Load Dubai Logos function
+  // Load Dubai Logos function - loads specific images to specific boxes
   const handleLoadDubaiLogos = async () => {
-    // List of Dubai logo images to load
-    const dubaiLogos = [
-      '/images/card1.jpg',
-      '/images/card2.jpg',
-      '/images/card3.jpg',
-      '/images/card1.jpg',
-      '/images/card2.jpg',
-      '/images/card3.jpg'
-    ];
+    setIsLoadingLogos(true);
+    try {
+      // Map images to specific boxes:
+      // Box 1 (index 0) and Box 4 (index 3) → 640x360 01.jpg
+      // Box 2 (index 1) and Box 5 (index 4) → 1280x720.jpg
+      // Box 3 (index 2) and Box 6 (index 5) → 800x180 01.jpg
+      const imageMapping = [
+        { boxIndex: 0, imagePath: '/images/640x360 01.jpg' }, // Box 1
+        { boxIndex: 1, imagePath: '/images/1280x720.jpg' },   // Box 2
+        { boxIndex: 2, imagePath: '/images/800x180 01.jpg' }, // Box 3
+        { boxIndex: 3, imagePath: '/images/640x360 01.jpg' }, // Box 4
+        { boxIndex: 4, imagePath: '/images/1280x720.jpg' },   // Box 5
+        { boxIndex: 5, imagePath: '/images/800x180 01.jpg' }  // Box 6
+      ];
 
-    const newBoxes = [...boxes];
-    
-    for (let i = 0; i < Math.min(dubaiLogos.length, boxes.length); i++) {
-      try {
-        const img = new window.Image();
-        img.crossOrigin = 'anonymous';
-        
-        await new Promise<void>((resolve, reject) => {
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              ctx.drawImage(img, 0, 0);
-              const imageData = canvas.toDataURL('image/jpeg');
-              newBoxes[i] = {
-                ...newBoxes[i],
-                image: imageData,
-                imageSize: {
-                  width: img.width,
-                  height: img.height
-                }
-              };
-              resolve();
-            } else {
-              reject(new Error('Canvas context not available'));
-            }
-          };
-          img.onerror = () => reject(new Error(`Failed to load image: ${dubaiLogos[i]}`));
-          img.src = dubaiLogos[i];
-        });
-      } catch (error) {
-        console.error(`Error loading logo ${i + 1}:`, error);
-      }
+      const newBoxes = [...boxes];
+      
+      // Load all images in parallel
+      const loadPromises = imageMapping.map(async ({ boxIndex, imagePath }) => {
+        try {
+          const img = new window.Image();
+          img.crossOrigin = 'anonymous';
+          
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.drawImage(img, 0, 0);
+                const imageData = canvas.toDataURL('image/jpeg');
+                newBoxes[boxIndex] = {
+                  ...newBoxes[boxIndex],
+                  image: imageData,
+                  imageSize: {
+                    width: img.width,
+                    height: img.height
+                  }
+                };
+                resolve();
+              } else {
+                reject(new Error('Canvas context not available'));
+              }
+            };
+            img.onerror = () => reject(new Error(`Failed to load image: ${imagePath}`));
+            img.src = imagePath;
+          });
+        } catch (error) {
+          console.error(`Error loading logo for Box ${boxIndex + 1}:`, error);
+        }
+      });
+      
+      await Promise.all(loadPromises);
+      setBoxes(newBoxes);
+    } finally {
+      setIsLoadingLogos(false);
     }
-    
-    setBoxes(newBoxes);
   };
 
   return (
@@ -411,96 +426,221 @@ export default function DM6AssetsHeroLayout() {
           accept="image/*"
           onChange={handleFileChange}
         />
-        {/* Controls Overlayed at Bottom Center - Reorganized for more compact height */}
+        {/* Controls Overlayed at Bottom Center - Improved UI/UX */}
         <div
           className="controls-overlay"
           style={{ 
             position: 'absolute', 
             left: '50%', 
-            bottom: 15,
+            bottom: 20,
             transform: 'translateX(-50%)', 
             zIndex: 20, 
-            background: 'rgba(255,255,255,0.8)', 
-            borderRadius: 13, 
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)', 
-            padding: '12px 18px', 
+            background: 'rgba(30, 41, 59, 0.95)', 
+            borderRadius: 16, 
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)', 
+            padding: '20px 24px', 
             display: 'flex', 
             alignItems: 'center', 
-            gap: 12, 
+            gap: 16, 
             flexWrap: 'wrap', 
-            width: '850px'
+            width: '700px',
+            border: '1px solid rgba(255,255,255,0.1)'
           }}
         >
-          {/* First row - Title and Promo Schedule on same line */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', marginBottom: 12 }}>
+          {/* First row - Title and BG Color */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, width: '100%', marginBottom: 8 }}>
             {/* Promo Title */}
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <label htmlFor="labelText" style={{ fontSize: 16, marginBottom: 3, color: '#333', fontWeight: 600 }}>Promo Title:</label>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, position: 'relative' }}>
+              <label htmlFor="labelText" style={{ fontSize: 14, marginBottom: 6, color: '#ffffff', fontWeight: 600, letterSpacing: '0.5px' }}>
+                Promo Title:
+              </label>
               <input
                 id="labelText"
                 type="text"
                 value={labelText}
                 onChange={e => setLabelText(e.target.value)}
                 placeholder="Enter promo title"
-                style={{ padding: '6px 12px', border: '1px solid #ccc', borderRadius: 6, fontSize: 16 }}
+                title="Enter the Promo title"
+                style={{ 
+                  padding: '10px 14px', 
+                  border: '1px solid rgba(255,255,255,0.2)', 
+                  borderRadius: 8, 
+                  fontSize: 15,
+                  background: 'rgba(255,255,255,0.1)',
+                  color: '#ffffff',
+                  outline: 'none',
+                  transition: 'all 0.2s'
+                }}
+                onFocus={(e) => {
+                  e.target.style.border = '1px solid rgba(59, 130, 246, 0.5)';
+                  e.target.style.background = 'rgba(255,255,255,0.15)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.border = '1px solid rgba(255,255,255,0.2)';
+                  e.target.style.background = 'rgba(255,255,255,0.1)';
+                }}
               />
             </div>
             
             {/* Background Color */}
-            <div style={{ display: 'flex', flexDirection: 'column', width: '120px' }}>
-              <label htmlFor="backgroundColor" style={{ fontSize: 16, marginBottom: 3, color: '#333', fontWeight: 600 }}>BG Color:</label>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '85px', position: 'relative' }}>
+              <label htmlFor="backgroundColor" style={{ fontSize: 14, marginBottom: 6, color: '#ffffff', fontWeight: 600, letterSpacing: '0.5px' }}>
+                BG Color:
+              </label>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <input
                   id="backgroundColor"
                   type="color"
                   value={backgroundColor}
                   onChange={e => setBackgroundColor(e.target.value)}
-                  style={{ width: 36, height: 36, borderRadius: 6, cursor: 'pointer' }}
+                  title="Select the background color for the entire layout"
+                  style={{ 
+                    width: 48, 
+                    height: 48, 
+                    borderRadius: 8, 
+                    cursor: 'pointer',
+                    border: '2px solid rgba(255,255,255,0.2)',
+                    background: 'transparent'
+                  }}
                 />
               </div>
             </div>
           </div>
           
-          {/* Second row - Load Dubai Logos button */}
+          {/* Second row - Load Dubai Logos button with preview */}
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 12 }}>
-            <button
-              onClick={handleLoadDubaiLogos}
-              style={{ 
-                padding: '10px 20px', 
-                background: '#ea580c', 
-                color: '#fff', 
-                borderRadius: 6, 
-                border: 'none', 
-                fontWeight: 600, 
-                fontSize: 16, 
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                transition: 'background 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#c2410c'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#ea580c'}
-            >
-              <svg width={20} height={20} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Load Dubai Logos
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
+              <button
+                onClick={handleLoadDubaiLogos}
+                disabled={isLoadingLogos}
+                title="Load Dubai Logos into all boxes"
+                style={{ 
+                  padding: '12px 24px', 
+                  background: isLoadingLogos ? '#9ca3af' : '#3b82f6', 
+                  color: '#ffffff', 
+                  borderRadius: 8, 
+                  border: 'none', 
+                  fontWeight: 600, 
+                  fontSize: 16, 
+                  cursor: isLoadingLogos ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  transition: 'all 0.2s',
+                  boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+                  flex: 1,
+                  opacity: isLoadingLogos ? 0.7 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoadingLogos) {
+                    e.currentTarget.style.background = '#2563eb';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoadingLogos) {
+                    e.currentTarget.style.background = '#3b82f6';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
+                  }
+                }}
+              >
+                {isLoadingLogos ? (
+                  <>
+                    <svg className="animate-spin" width={22} height={22} fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <svg width={22} height={22} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Load Dubai Logos
+                  </>
+                )}
+              </button>
+              {/* Preview image */}
+              <div 
+                style={{
+                  width: 100,
+                  height: 50,
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  flexShrink: 0
+                }}
+                title="Dubai Logo Preview"
+              >
+                <Image
+                  src="/images/640x360 01.jpg"
+                  alt="Dubai Logo Preview"
+                  width={100}
+                  height={50}
+                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                />
+              </div>
+            </div>
           </div>
           
           {/* Third row - Capture Image button */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', justifyContent: 'center' }}>
             <button
               onClick={handleCaptureImage}
-              style={{ padding: '6px 18px', background: '#0070f3', color: '#fff', borderRadius: 6, border: 'none', fontWeight: 600, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+              disabled={isCapturing}
+              title="Capture the current layout as a JPG image file"
+              style={{ 
+                padding: '10px 22px', 
+                background: isCapturing ? '#9ca3af' : '#3b82f6', 
+                color: '#ffffff', 
+                borderRadius: 8, 
+                border: 'none', 
+                fontWeight: 600, 
+                fontSize: 15, 
+                cursor: isCapturing ? 'not-allowed' : 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 8,
+                transition: 'all 0.2s',
+                boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+                opacity: isCapturing ? 0.7 : 1
+              }}
+              onMouseEnter={(e) => {
+                if (!isCapturing) {
+                  e.currentTarget.style.background = '#2563eb';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isCapturing) {
+                  e.currentTarget.style.background = '#3b82f6';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
+                }
+              }}
             >
-              <svg width={16} height={16} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Capture Image
+              {isCapturing ? (
+                <>
+                  <svg className="animate-spin" width={22} height={22} fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Capturing...
+                </>
+              ) : (
+                <>
+                  <svg width={22} height={22} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Capture Image
+                </>
+              )}
             </button>
           </div>
         </div>

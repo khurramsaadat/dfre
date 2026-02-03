@@ -25,6 +25,8 @@ export default function DM3AssetsHeroLayout() {
   const [currentBoxIndex, setCurrentBoxIndex] = useState<number | null>(null);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
   const [labelText, setLabelText] = useState('');
+  const [isLoadingLogos, setIsLoadingLogos] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<HTMLDivElement>(null);
@@ -113,24 +115,25 @@ export default function DM3AssetsHeroLayout() {
   // Capture functionality
   const handleCaptureImage = async () => {
     if (layoutRef.current) {
-      // Hide controls and add white border for capture
-      const controlsOverlay = layoutRef.current.querySelector('.controls-overlay');
-      const boxEls = layoutRef.current.querySelectorAll('.box-border');
-      const imageSizeInfo = layoutRef.current.querySelectorAll('.image-size-info');
-      
-      if (controlsOverlay) {
-        (controlsOverlay as HTMLElement).style.display = 'none';
-      }
-      
-      boxEls.forEach((box: Element) => {
-        (box as HTMLElement).style.border = 'none';
-      });
-
-      imageSizeInfo.forEach((info: Element) => {
-        (info as HTMLElement).style.display = 'none';
-      });
-
+      setIsCapturing(true);
       try {
+        // Hide controls and add white border for capture
+        const controlsOverlay = layoutRef.current.querySelector('.controls-overlay');
+        const boxEls = layoutRef.current.querySelectorAll('.box-border');
+        const imageSizeInfo = layoutRef.current.querySelectorAll('.image-size-info');
+        
+        if (controlsOverlay) {
+          (controlsOverlay as HTMLElement).style.display = 'none';
+        }
+        
+        boxEls.forEach((box: Element) => {
+          (box as HTMLElement).style.border = 'none';
+        });
+
+        imageSizeInfo.forEach((info: Element) => {
+          (info as HTMLElement).style.display = 'none';
+        });
+
         const html2canvas = (await import('html2canvas')).default;
         const canvas = await html2canvas(layoutRef.current, {
           scale: 1,
@@ -174,6 +177,8 @@ export default function DM3AssetsHeroLayout() {
         link.click();
       } catch (error) {
         console.error('Error capturing image:', error);
+      } finally {
+        setIsCapturing(false);
       }
     }
   };
@@ -203,6 +208,65 @@ export default function DM3AssetsHeroLayout() {
     const r1 = aspectRatioDecimal(w1, h1);
     const r2 = aspectRatioDecimal(w2, h2);
     return Math.abs(r1 - r2) <= tolerance;
+  };
+
+  // Load Dubai Logos function - loads specific images to specific boxes
+  const handleLoadDubaiLogos = async () => {
+    setIsLoadingLogos(true);
+    try {
+      // Map images to specific boxes:
+      // Box 1 (index 0) → 640x360 01.jpg
+      // Box 2 (index 1) → 1280x720.jpg
+      // Box 3 (index 2) → 800x180 01.jpg
+      const imageMapping = [
+        { boxIndex: 0, imagePath: '/images/640x360 01.jpg' }, // Box 1
+        { boxIndex: 1, imagePath: '/images/1280x720.jpg' },   // Box 2
+        { boxIndex: 2, imagePath: '/images/800x180 01.jpg' }  // Box 3
+      ];
+
+      const newBoxes = [...boxes];
+      
+      // Load all images in parallel
+      const loadPromises = imageMapping.map(async ({ boxIndex, imagePath }) => {
+        try {
+          const img = new window.Image();
+          img.crossOrigin = 'anonymous';
+          
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.drawImage(img, 0, 0);
+                const imageData = canvas.toDataURL('image/jpeg');
+                newBoxes[boxIndex] = {
+                  ...newBoxes[boxIndex],
+                  image: imageData,
+                  imageSize: {
+                    width: img.width,
+                    height: img.height
+                  }
+                };
+                resolve();
+              } else {
+                reject(new Error('Canvas context not available'));
+              }
+            };
+            img.onerror = () => reject(new Error(`Failed to load image: ${imagePath}`));
+            img.src = imagePath;
+          });
+        } catch (error) {
+          console.error(`Error loading logo for Box ${boxIndex + 1}:`, error);
+        }
+      });
+      
+      await Promise.all(loadPromises);
+      setBoxes(newBoxes);
+    } finally {
+      setIsLoadingLogos(false);
+    }
   };
 
   return (
@@ -351,35 +415,220 @@ export default function DM3AssetsHeroLayout() {
           accept="image/*"
           onChange={handleFileChange}
         />
-        {/* Controls Overlayed at Bottom Right */}
+        {/* Controls Overlayed at Bottom Right - Compact Size */}
         <div
           className="controls-overlay"
-          style={{ position: 'absolute', right: 32, bottom: 32, zIndex: 20, background: 'rgba(255,255,255,0.8)', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 16 }}
+          style={{ 
+            position: 'absolute', 
+            right: 10, 
+            bottom: 140,
+            zIndex: 20, 
+            background: 'rgba(30, 41, 59, 0.95)', 
+            borderRadius: 16, 
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)', 
+            padding: '16px 20px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            gap: 12, 
+            width: '500px',
+            border: '1px solid rgba(255,255,255,0.1)'
+          }}
         >
-          <input
-            type="text"
-            value={labelText}
-            onChange={e => setLabelText(e.target.value)}
-            placeholder="Enter text here"
-            style={{ padding: '8px 16px', border: '1px solid #ccc', borderRadius: 8, fontSize: 16, marginRight: 8 }}
-          />
-          <input
-            type="color"
-            value={backgroundColor}
-            onChange={e => setBackgroundColor(e.target.value)}
-            style={{ width: 48, height: 48, borderRadius: 8, cursor: 'pointer', marginRight: 8 }}
-          />
-          <span style={{ color: '#333', fontSize: 16, marginRight: 8 }}>Background Color</span>
-          <button
-            onClick={handleCaptureImage}
-            style={{ padding: '8px 24px', background: '#0070f3', color: '#fff', borderRadius: 8, border: 'none', fontWeight: 600, fontSize: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
-          >
-            <svg width={20} height={20} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Capture Image
-          </button>
+          {/* Promo Title */}
+          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+            <label htmlFor="labelText" style={{ fontSize: 13, marginBottom: 6, color: '#ffffff', fontWeight: 600, letterSpacing: '0.5px' }}>
+              Promo Title:
+            </label>
+            <input
+              id="labelText"
+              type="text"
+              value={labelText}
+              onChange={e => setLabelText(e.target.value)}
+              placeholder="Enter promo title"
+              title="Enter the Promo title"
+              style={{ 
+                padding: '8px 12px', 
+                border: '1px solid rgba(255,255,255,0.2)', 
+                borderRadius: 8, 
+                fontSize: 14,
+                background: 'rgba(255,255,255,0.1)',
+                color: '#ffffff',
+                outline: 'none',
+                transition: 'all 0.2s'
+              }}
+              onFocus={(e) => {
+                e.target.style.border = '1px solid rgba(59, 130, 246, 0.5)';
+                e.target.style.background = 'rgba(255,255,255,0.15)';
+              }}
+              onBlur={(e) => {
+                e.target.style.border = '1px solid rgba(255,255,255,0.2)';
+                e.target.style.background = 'rgba(255,255,255,0.1)';
+              }}
+            />
+          </div>
+          
+          {/* BG Color and Load Dubai Logos in same row */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+            {/* Background Color */}
+            <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+              <label htmlFor="backgroundColor" style={{ fontSize: 13, marginBottom: 6, color: '#ffffff', fontWeight: 600, letterSpacing: '0.5px' }}>
+                BG Color:
+              </label>
+              <input
+                id="backgroundColor"
+                type="color"
+                value={backgroundColor}
+                onChange={e => setBackgroundColor(e.target.value)}
+                title="Select the background color for the entire layout"
+                style={{ 
+                  width: 44, 
+                  height: 44, 
+                  borderRadius: 8, 
+                  cursor: 'pointer',
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  background: 'transparent'
+                }}
+              />
+            </div>
+            
+            {/* Load Dubai Logos button with preview */}
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <button
+                onClick={handleLoadDubaiLogos}
+                disabled={isLoadingLogos}
+                title="Load Dubai logos into all boxes"
+                style={{ 
+                  padding: '10px 16px', 
+                  background: isLoadingLogos ? '#9ca3af' : '#3b82f6', 
+                  color: '#ffffff', 
+                  borderRadius: 8, 
+                  border: 'none', 
+                  fontWeight: 600, 
+                  fontSize: 14, 
+                  cursor: isLoadingLogos ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  transition: 'all 0.2s',
+                  boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+                  width: '100%',
+                  opacity: isLoadingLogos ? 0.7 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoadingLogos) {
+                    e.currentTarget.style.background = '#2563eb';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoadingLogos) {
+                    e.currentTarget.style.background = '#3b82f6';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
+                  }
+                }}
+              >
+                {isLoadingLogos ? (
+                  <>
+                    <svg className="animate-spin" width={18} height={18} fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <svg width={18} height={18} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Load Logos
+                  </>
+                )}
+              </button>
+            </div>
+            
+            {/* Preview image */}
+            <div 
+              style={{
+                width: 100,
+                height: 43,
+                borderRadius: 8,
+                overflow: 'hidden',
+                border: '2px solid rgba(255,255,255,0.2)',
+                flexShrink: 0
+              }}
+              title="Dubai Logo Preview"
+            >
+              <Image
+                src="/images/640x360 01.jpg"
+                alt="Dubai Logo Preview"
+                width={100}
+                height={50}
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+              />
+            </div>
+          </div>
+          
+          {/* Capture Image button */}
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <button
+              onClick={handleCaptureImage}
+              disabled={isCapturing}
+              title="Capture the current layout as a JPG image"
+              style={{ 
+                padding: '10px 20px', 
+                background: isCapturing ? '#9ca3af' : '#3b82f6', 
+                color: '#ffffff', 
+                borderRadius: 8, 
+                border: 'none', 
+                fontWeight: 600, 
+                fontSize: 14, 
+                cursor: isCapturing ? 'not-allowed' : 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                gap: 8,
+                transition: 'all 0.2s',
+                boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+                width: '100%',
+                opacity: isCapturing ? 0.7 : 1
+              }}
+              onMouseEnter={(e) => {
+                if (!isCapturing) {
+                  e.currentTarget.style.background = '#2563eb';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isCapturing) {
+                  e.currentTarget.style.background = '#3b82f6';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
+                }
+              }}
+            >
+              {isCapturing ? (
+                <>
+                  <svg className="animate-spin" width={16} height={16} fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Capturing...
+                </>
+              ) : (
+                <>
+                  <svg width={16} height={16} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Capture Image
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
