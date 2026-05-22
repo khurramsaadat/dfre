@@ -551,4 +551,93 @@ dfre-layout-factory/
 ### Dependencies Used
 - jspdf: ^3.0.1 (already installed)
 - html2canvas: ^1.4.1 (already installed)
-- @heroicons/react: ^2.2.0 (already installed) 
+- @heroicons/react: ^2.2.0 (already installed)
+
+## [0.3.0] - 2025-05-22
+
+### Added
+- **Artwork QC page** for comparing old vs new artworks
+  - New route: `/artwork-qc` with `ArtworkQCLayout` component
+  - Two side-by-side comparison panels: English Artwork (EN) and Arabic Artwork (عربي)
+  - Each panel features a 1280x720 pixel display area (16:9 aspect ratio, responsively scaled)
+  - White drop zone background matching dm6assets page style
+  - Clickable drop zone opens file browser (auto-detects old/new slot)
+  - Drag-and-drop support with auto-detection (first drop = old, second = new)
+  - "Old Artwork" (blue) and "New Artwork" (purple) file picker buttons per panel
+  - Load status indicators directly under each button
+  - "Compare" toggle button flashes between old and new artwork at 500ms intervals
+  - "Reset" button clears both images and stops comparison
+  - OLD/NEW status badges positioned below the drop zone (outside the artwork area)
+  - Image dimensions displayed below the drop zone box
+  - "Click to Change" hover overlay when artwork is loaded
+  - Instructional footer text
+  - Dark theme (#0f172a) consistent with tool pages
+- Added "Artwork QC" navigation link with EyeIcon in Header
+  - Positioned before "Locations" in both desktop and mobile menus
+  - Active state highlighting consistent with other nav links
+  - Mobile menu with staggered slide-up animation (400ms delay)
+- Renamed `DOCS/` folder to `markdown/`
+
+### Technical Details
+- Component: `src/components/ArtworkQCLayout.tsx` (client-side)
+- Page: `src/app/artwork-qc/page.tsx` (thin wrapper)
+- Uses native `<img>` for pixel-accurate artwork rendering (no Next.js optimization on data URLs)
+- Toggle implemented via `setInterval` at 500ms with cleanup on unmount
+- Responsive flexbox layout with `flexWrap` for mobile stacking
+- FileReader API for client-side image loading
+- No additional dependencies required
+
+### Current Folder Structure
+```
+dfre-layout-factory/
+  markdown/
+    CHANGELOG.md
+    INPUTS.md
+    MAP-IMAGES-GUIDE.md
+    PROGRESS.md
+  public/
+    images/
+      (existing images)
+    favicon-16x16.png
+    favicon-32x32.png
+  src/
+    app/
+      artwork-qc/
+        page.tsx
+      design-studio/
+        page.tsx
+      dm3assets/
+        page.tsx
+      dm6assets/
+        page.tsx
+      locations/
+        page.tsx
+      globals.css
+      layout.tsx
+      page.tsx
+    components/
+      ArtworkQCLayout.tsx
+      DesignStudioCanvas.module.css
+      DesignStudioCanvas.tsx
+      DM3AssetsHeroLayout.tsx
+      DM6AssetsHeroLayout.tsx
+      FeatureCard.tsx
+      Footer.tsx
+      GearIcon.css
+      GearIcon.tsx
+      Header.tsx
+      Hero.tsx
+      Typewriter.tsx
+    types/
+      global.d.ts
+    utils/
+      share.ts
+  netlify.toml
+  next-env.d.ts
+  package-lock.json
+  package.json
+  postcss.config.js
+  README.md
+  tailwind.config.js
+  tsconfig.json
+``` 

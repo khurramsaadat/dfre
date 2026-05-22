@@ -4,7 +4,7 @@ import GearIcon from './GearIcon';
 import '../app/globals.css';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { HomeIcon, BuildingOffice2Icon, DocumentTextIcon, PencilIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, BuildingOffice2Icon, DocumentTextIcon, PencilIcon, EyeIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,6 +16,7 @@ const Header = () => {
     { name: 'DM 6 Assets', href: '/dm6assets' },
     { name: 'DM 3 Assets', href: '/dm3assets' },
     { name: 'Design Studio', href: '/design-studio' },
+    { name: 'Artwork QC', href: '/artwork-qc' },
     { name: 'Locations', href: '/locations' },
   ]
 
@@ -75,6 +76,10 @@ const Header = () => {
             <Link href="/design-studio" className={getLinkClasses('/design-studio') + ' text-sm'}>
               <PencilIcon className="w-4 h-4 mr-1 inline" />
               <span className="relative z-10">Design Studio</span>
+            </Link>
+            <Link href="/artwork-qc" className={getLinkClasses('/artwork-qc') + ' text-sm'}>
+              <EyeIcon className="w-4 h-4 mr-1 inline" />
+              <span className="relative z-10">Artwork QC</span>
             </Link>
             <Link href="/locations" className={getLinkClasses('/locations') + ' text-sm'}>
               <MapPinIcon className="w-4 h-4 mr-1 inline" />
@@ -136,10 +141,20 @@ const Header = () => {
             </Link>
             <hr className="border-2 border-white/20" />
             <Link 
+              href="/artwork-qc" 
+              className={getMobileLinkClasses('/artwork-qc')}
+              onClick={() => setMenuOpen(false)}
+              style={{ animationDelay: '400ms' }}
+            >
+              <EyeIcon className="w-5 h-5 mr-1 inline" />
+              <span className="relative z-10">Artwork QC</span>
+            </Link>
+            <hr className="border-2 border-white/20" />
+            <Link 
               href="/locations" 
               className={getMobileLinkClasses('/locations')}
               onClick={() => setMenuOpen(false)}
-              style={{ animationDelay: '400ms' }}
+              style={{ animationDelay: '500ms' }}
             >
               <MapPinIcon className="w-5 h-5 mr-1 inline" />
               <span className="relative z-10">Locations</span>

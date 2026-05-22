@@ -227,4 +227,28 @@
     - Loads "1280x720.jpg" into Box 2 (index 1)
     - Loads "800x180 01.jpg" into Box 3 (index 2)
   - Panel positioned at bottom center (matching dm6assets)
-  - Consistent styling and behavior across both pages 
+  - Consistent styling and behavior across both pages
+
+## 2025-05-22
+- Created Artwork QC page for comparing old vs new artworks
+  - New route: /artwork-qc
+  - New component: ArtworkQCLayout.tsx
+  - Two side-by-side panels: English Artwork (EN) and Arabic Artwork (عربي)
+  - Each panel has a 1280x720 scaled display area (16:9 aspect ratio)
+  - White drop zone background matching dm6assets page style
+  - Clickable drop zone opens file browser (auto-detects old/new slot)
+  - Drag-and-drop support: first drop = old artwork, second drop = new artwork
+  - "Old Artwork" button (blue) and "New Artwork" button (purple) for each panel
+  - Load status directly under each button ("Old loaded" / "New loaded")
+  - "Compare" toggle button (amber) flashes between old/new at 500ms
+  - OLD/NEW badges positioned outside and below the drop zone
+  - Image dimensions displayed below the drop zone box (not overlapping artwork)
+  - "Click to Change" hover overlay when artwork is loaded
+  - "Reset" button clears both images in a panel
+  - Responsive layout: panels stack vertically on narrow screens
+  - Dark theme (#0f172a) matching tool pages
+- Added "Artwork QC" link to navbar with EyeIcon (before Locations)
+  - Desktop navigation: icon + text link with active state
+  - Mobile menu: staggered animation with 400ms delay
+- Renamed DOCS folder to markdown
+- Build successful with Next.js 16.1.6, all 8 routes compile 

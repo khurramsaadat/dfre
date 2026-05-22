@@ -99,4 +99,28 @@ _Log all user inputs here with timestamps (YYYY-MM-DD HH:mm) as per project rule
   - Build successful with all updated dependencies
   - User corrected: Next.js 15.5.11 is not the latest version
   - Updated to Next.js 16.1.6 (latest stable version)
-  - Updated eslint-config-next to match Next.js 16.1.6 
+  - Updated eslint-config-next to match Next.js 16.1.6
+
+2025-05-22 11:09:
+- User requested new "Check" page for comparing old and new artworks side by side
+  - Two drop zones (1280x720) for English and Arabic artworks
+  - Load old artworks, then load new artworks, toggle to see differences
+  - User said NO to multiple comparison modes (slider, difference, overlay)
+  - User said YES to page name "Artwork QC" with EyeIcon
+  - User said YES to Reset/Clear button for each panel
+  - User said YES to toggle speed fast = 200ms
+  - Place link before Locations in navbar
+
+2025-05-22 11:30:
+- User feedback on Artwork QC page:
+  - Drop zone should be white color like dm6assets page
+  - Clicking the drop zone should open file browser
+  - 1280x720 dimension text should move below the drop zone box (was hiding artwork)
+  - Compare toggle speed changed from 200ms to 500ms
+  - OLD/NEW badges moved from upper right corner to outside/below the drop zone
+  - "Old loaded" and "New loaded" status should be directly under OLD and NEW buttons
+  - Rename button "Old" to "Old Artwork" and "New" to "New Artwork"
+  - Rename DOCS folder to markdown folder
+  - Make all markdown files and keep them updated
+  - Test with MCP playwright server
+  - Push all code to repo 
