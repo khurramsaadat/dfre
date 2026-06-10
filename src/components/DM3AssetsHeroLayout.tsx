@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import ResolutionReport from './ResolutionReport';
 
 type Box = {
   width: number;
@@ -9,6 +10,7 @@ type Box = {
   top: number;
   image?: string;
   imageSize?: { width: number; height: number };
+  fileName?: string;
 };
 
 const boxesConfig: Box[] = [
@@ -27,9 +29,11 @@ export default function DM3AssetsHeroLayout() {
   const [labelText, setLabelText] = useState('');
   const [isLoadingLogos, setIsLoadingLogos] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<HTMLDivElement>(null);
+  const reportSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateScale = () => {
@@ -52,6 +56,7 @@ export default function DM3AssetsHeroLayout() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && currentBoxIndex !== null) {
+      const fileName = file.name;
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new window.Image();
@@ -60,10 +65,8 @@ export default function DM3AssetsHeroLayout() {
           newBoxes[currentBoxIndex] = {
             ...newBoxes[currentBoxIndex],
             image: typeof e.target?.result === 'string' ? e.target.result : undefined,
-            imageSize: {
-              width: img.width,
-              height: img.height
-            }
+            imageSize: { width: img.width, height: img.height },
+            fileName,
           };
           setBoxes(newBoxes);
         };
@@ -91,6 +94,7 @@ export default function DM3AssetsHeroLayout() {
     const files = Array.from(e.dataTransfer.files);
     const imageFile = files.find(file => file.type.startsWith('image/'));
     if (imageFile) {
+      const fileName = imageFile.name;
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new window.Image();
@@ -99,10 +103,8 @@ export default function DM3AssetsHeroLayout() {
           newBoxes[index] = {
             ...newBoxes[index],
             image: typeof e.target?.result === 'string' ? e.target.result : undefined,
-            imageSize: {
-              width: img.width,
-              height: img.height
-            }
+            imageSize: { width: img.width, height: img.height },
+            fileName,
           };
           setBoxes(newBoxes);
         };
@@ -244,10 +246,8 @@ export default function DM3AssetsHeroLayout() {
                 newBoxes[boxIndex] = {
                   ...newBoxes[boxIndex],
                   image: imageData,
-                  imageSize: {
-                    width: img.width,
-                    height: img.height
-                  }
+                  imageSize: { width: img.width, height: img.height },
+                  fileName: imagePath.split('/').pop() || 'Dubai Logo',
                 };
                 resolve();
               } else {
@@ -269,15 +269,38 @@ export default function DM3AssetsHeroLayout() {
     }
   };
 
+  // Check if any box has mismatches
+  const hasMismatches = boxes.some(
+    (b) => b.image && b.imageSize && (b.imageSize.width !== b.width || b.imageSize.height !== b.height)
+  );
+
+  const handleToggleReport = () => {
+    setShowReport(!showReport);
+    if (!showReport) {
+      setTimeout(() => {
+        reportSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  };
+
+  const reportBoxes = boxes.map((box, index) => ({
+    index,
+    width: box.width,
+    height: box.height,
+    image: box.image,
+    imageSize: box.imageSize,
+    fileName: box.fileName,
+  }));
+
   return (
     <div
       ref={containerRef}
       style={{
         width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
+        minHeight: '100vh',
+        overflow: showReport ? 'auto' : 'hidden',
         background: backgroundColor,
-        position: 'relative'
+        position: 'relative',
       }}
     >
       <div
@@ -571,8 +594,8 @@ export default function DM3AssetsHeroLayout() {
             </div>
           </div>
           
-          {/* Capture Image button */}
-          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          {/* Capture Image and Resolution Report buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%' }}>
             <button
               onClick={handleCaptureImage}
               disabled={isCapturing}
@@ -592,7 +615,7 @@ export default function DM3AssetsHeroLayout() {
                 gap: 8,
                 transition: 'all 0.2s',
                 boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
-                width: '100%',
+                flex: 1,
                 opacity: isCapturing ? 0.7 : 1
               }}
               onMouseEnter={(e) => {
@@ -624,13 +647,68 @@ export default function DM3AssetsHeroLayout() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  Capture Image
+                  Capture
                 </>
               )}
             </button>
+
+            {/* Resolution Report Button */}
+            {hasMismatches && (
+              <button
+                onClick={handleToggleReport}
+                title="View resolution mismatch report to share with client"
+                style={{
+                  padding: '10px 16px',
+                  background: showReport ? '#b91c1c' : '#dc2626',
+                  color: '#ffffff',
+                  borderRadius: 8,
+                  border: 'none',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  transition: 'all 0.2s',
+                  boxShadow: '0 2px 8px rgba(220, 38, 38, 0.3)',
+                  flex: 1,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#991b1b';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = showReport ? '#b91c1c' : '#dc2626';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(220, 38, 38, 0.3)';
+                }}
+              >
+                <svg width={16} height={16} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                {showReport ? 'Hide' : 'Report'}
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Resolution Report Section */}
+      {showReport && (
+        <div
+          ref={reportSectionRef}
+          style={{
+            width: '100%',
+            paddingTop: Math.max(layoutHeight * scale - layoutHeight + 20, 20),
+          }}
+        >
+          <ResolutionReport
+            boxes={reportBoxes}
+            promoTitle={labelText}
+          />
+        </div>
+      )}
     </div>
   );
 } 

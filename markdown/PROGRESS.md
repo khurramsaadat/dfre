@@ -251,4 +251,29 @@
   - Desktop navigation: icon + text link with active state
   - Mobile menu: staggered animation with 400ms delay
 - Renamed DOCS folder to markdown
-- Build successful with Next.js 16.1.6, all 8 routes compile 
+- Build successful with Next.js 16.1.6, all 8 routes compile
+
+## 2026-06-10
+- Added Resolution Mismatch Report feature to DM 6 Assets and DM 3 Assets pages
+  - Created shared `ResolutionReport.tsx` component
+  - Branded report with Layout Factory header, promo title, and date
+  - Table showing: thumbnail preview, filename, required resolution, received resolution, and pixel difference
+  - PDF download functionality with jsPDF (thumbnails embedded in PDF)
+  - Red "Resolution Report" button only appears when mismatches are detected
+  - Toggle shows/hides report section below the layout
+  - Auto-scrolls to report when opened
+  - Green success message when all images match
+- Added filename tracking to both DM6 and DM3 layout components
+  - Captures file names from file picker, drag-and-drop, and Load Dubai Logos
+  - Filenames displayed in report for easy client communication
+- Tested with Playwright MCP - all features verified working
+- Build successful with Next.js 16.1.6, all 8 routes compile
+- Enhanced Resolution Report with 5 new features:
+  - Bigger thumbnails (100px fixed width in UI, 30mm in PDF) with proportional height
+  - Removed "sRGB Color Profile" from specs text
+  - Added 'px' unit label to all resolution values (UI + PDF)
+  - Grouped mismatched images by required resolution with color-coded group headers
+  - Total vs mismatch count display (e.g. "4 of 6 images with incorrect resolution")
+  - Red X status column for quick visual indicator on each row
+  - Print-friendly light theme toggle (sun/moon icon switches white/dark backgrounds)
+  - All features applied consistently in both UI and PDF output

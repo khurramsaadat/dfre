@@ -123,4 +123,65 @@ _Log all user inputs here with timestamps (YYYY-MM-DD HH:mm) as per project rule
   - Rename DOCS folder to markdown folder
   - Make all markdown files and keep them updated
   - Test with MCP playwright server
-  - Push all code to repo 
+  - Push all code to repo
+
+2026-06-10 14:29:
+- User requested Resolution Mismatch Report feature for dm6assets and dm3assets pages
+  - Feature to share with clients showing image resolution mismatches
+  - Should include thumbnails, filenames, resolution received vs required resolution
+  - User selected: Only show mismatched images (not all images)
+  - User selected: Download as PDF report
+  - User selected: Show as a new section below the layout
+  - User selected: Branded report with 'Layout Factory' header, promo title and date
+
+2026-06-10 14:52:
+- User requested improvements to Resolution Report:
+  - Remove the mismatch/status column
+  - Remove "LAYOUT FACTORY" main title from header
+  - Remove page name "DM 6 Assets" / "DM 3 Assets"
+  - No brown color in header
+  - Reduce filename so it's not clipped (truncate with extension preserved)
+  - Remove Box 1, Box 2 references (client doesn't know about it)
+  - Thumbnails should maintain original aspect ratio (proportional scaling)
+  - Received resolution text should be red
+  - Add image specifications (High Quality JPG/PNG, 72 DPI, sRGB)
+  - Improve overall design to look premium (researched best practices)
+
+2026-06-10 15:09:
+- User requested further improvements to Resolution Report:
+  - Move Required/Received columns to the right, give more space to Filename
+  - Remove aspect ratio under resolutions
+  - Rearrange header info into compact single line
+  - Add "Please revise the images and resubmit" prominently in report
+  - Make report compact to fit on one A4 landscape page when printed
+
+2026-06-10 15:24:
+- User requested:
+  - Make thumbnails a bit bigger and keep the same width for all thumbnails
+  - Remove the text "sRGB Color Profile" from specs
+  - Provide 10 suggestions for improving the report
+- User selected 5 of 10 suggestions to implement:
+  - s4: Add 'px' unit label to resolution values for clarity
+  - s5: Group table rows by required resolution type
+  - s6: Show total image count vs mismatch count (e.g. "4 of 6")
+  - s7: Add a red X status column for quick visual scanning
+  - s8: Print-friendly light theme toggle (white background for browser printing)
+
+2026-06-10 15:41:
+- User requested 4 changes to Resolution Report:
+  - Fix thumbnails: scale down with both x and y constraints (fixed 100x56px container)
+  - Remove red X status column
+  - Remove blue group header rows (resolution grouping)
+  - Add "Resolution" subtitle under REQUIRED and RECEIVED column headers
+
+2026-06-10 15:48:
+- User requested:
+  - Rename "PREVIEW" column header to "Artworks" (UI + PDF)
+  - Light theme background colors too light for printout - strengthened all print-mode colors
+
+2026-06-10 16:05:
+- User requested 4 PDF changes:
+  - Remove black line on top edge of paper (accent line)
+  - Column header titles bigger, black text, blue background (#DBEAFE)
+  - Specs box same blue background as column headers
+  - "Please revise the sizes and resubmit" moved above footer line, changed from red to black

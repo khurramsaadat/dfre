@@ -640,4 +640,121 @@ dfre-layout-factory/
   README.md
   tailwind.config.js
   tsconfig.json
+```
+
+## [0.4.1] - 2026-06-10
+
+### Enhanced
+- **Resolution Report - UI Improvements**
+  - Bigger thumbnails: fixed 100px width in UI (120px column), 30mm in PDF - all same width, proportional height
+  - Removed "sRGB Color Profile" from specs text (both UI and PDF)
+
+- **Resolution Report - 5 New Features (user-selected from 10 suggestions)**
+  1. **'px' unit labels** on all resolution values (e.g. "1280 x 720 px") in both UI and PDF
+  2. **Grouped by required resolution** - mismatched images grouped under blue-accented resolution headers with item counts
+  3. **Total vs mismatch count** - alert shows "4 of 6 images" instead of just "4 images" for better context
+  4. **Red X status column** - visual indicator at the end of each row; drawn with SVG in UI and line strokes in PDF
+  5. **Print-friendly light theme** - toggle button (sun/moon icon with "Print"/"Dark" label) switches entire report to white background for browser printing
+
+### Technical Details
+- Updated: `src/components/ResolutionReport.tsx` (complete rewrite for theme system, grouping, and new columns)
+- Added `useState` for theme toggle state
+- Pre-computed global indices with `IndexedBox` type for clean grouped rendering
+- Theme object pattern with 25+ color tokens for dark/light modes
+- `Array.from(Map.entries())` used for TypeScript compatibility (no downlevelIteration)
+- PDF group headers use light blue background (#EFF6FF) with bold blue text
+- PDF status X drawn with crossed lines (doc.line) for font-independent rendering
+- Updated: `markdown/INPUTS.md`, `markdown/PROGRESS.md`, `markdown/CHANGELOG.md`
+
+## [0.4.0] - 2026-06-10
+
+### Added
+- **Resolution Mismatch Report feature** for DM 6 Assets and DM 3 Assets pages
+  - New shared component: `ResolutionReport.tsx` for displaying and exporting resolution mismatch data
+  - Red "Resolution Report" button appears in controls panel when image mismatches are detected
+  - Branded report section below the layout with:
+    - Layout Factory header with gear icon and promo title/date
+    - Alert banner showing count of mismatched images
+    - Table with columns: #, Preview (thumbnail), Filename, Required Resolution, Received Resolution, Difference
+    - Color-coded data: green for required, red for received, amber for difference
+    - Aspect ratio displayed for both required and received resolutions
+  - **PDF Report Download** using jsPDF:
+    - Branded header with Layout Factory branding, layout type badge, and date
+    - Promo title displayed on report
+    - Summary line showing mismatch count
+    - Professional table with thumbnails, filenames, required vs received resolutions, and difference
+    - Alternating row backgrounds and proper pagination
+    - Footer with revision instruction message
+    - Filename format: `Resolution_Report_[PromoTitle].pdf`
+  - Toggle button switches between "Resolution Report" / "Hide Report"
+  - Page becomes scrollable when report is shown, auto-scrolls to report section
+  - When all images match, shows green success message instead of table
+
+- **Filename tracking** for uploaded images
+  - File names captured during file picker upload, drag-and-drop, and Load Dubai Logos
+  - Filenames displayed in the resolution report table for easy client communication
+  - Added `fileName` property to Box type in both DM6 and DM3 components
+
+### Technical Details
+- New component: `src/components/ResolutionReport.tsx` (shared between DM6 and DM3)
+- Updated: `src/components/DM6AssetsHeroLayout.tsx` (filename tracking, report integration)
+- Updated: `src/components/DM3AssetsHeroLayout.tsx` (filename tracking, report integration)
+- Uses jsPDF for PDF generation with image embedding (thumbnails in PDF)
+- Report only shows images with mismatches (filtered view)
+- Container overflow switches from 'hidden' to 'auto' when report is visible
+
+### Current Folder Structure
+```
+dfre-layout-factory/
+  markdown/
+    CHANGELOG.md
+    INPUTS.md
+    MAP-IMAGES-GUIDE.md
+    PROGRESS.md
+  public/
+    images/
+      (existing images)
+    favicon-16x16.png
+    favicon-32x32.png
+  src/
+    app/
+      artwork-qc/
+        page.tsx
+      design-studio/
+        page.tsx
+      dm3assets/
+        page.tsx
+      dm6assets/
+        page.tsx
+      locations/
+        page.tsx
+      globals.css
+      layout.tsx
+      page.tsx
+    components/
+      ArtworkQCLayout.tsx
+      DesignStudioCanvas.module.css
+      DesignStudioCanvas.tsx
+      DM3AssetsHeroLayout.tsx
+      DM6AssetsHeroLayout.tsx
+      FeatureCard.tsx
+      Footer.tsx
+      GearIcon.css
+      GearIcon.tsx
+      Header.tsx
+      Hero.tsx
+      ResolutionReport.tsx      <-- NEW
+      Typewriter.tsx
+    types/
+      global.d.ts
+    utils/
+      share.ts
+  netlify.toml
+  next-env.d.ts
+  package-lock.json
+  package.json
+  postcss.config.js
+  README.md
+  tailwind.config.js
+  tsconfig.json
 ``` 
