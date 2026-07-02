@@ -110,7 +110,7 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
     doc.setFontSize(14);
     doc.setTextColor(30, 41, 59);
     doc.text('Resolution Report', m, y);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
     doc.text(currentDate, pageWidth - m, y, { align: 'right' });
@@ -127,19 +127,19 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
     doc.text(countText, pageWidth - m, y, { align: 'right' });
 
     // Separator - darker for print visibility
-    y += 4;
+    y += 8;
     doc.setDrawColor(180, 180, 180);
     doc.setLineWidth(0.3);
     doc.line(m, y, pageWidth - m, y);
-    y += 7;
+    y += 8;
 
     // Column positions
     const col = {
       num: m,
       thumb: m + 7,
       fileName: m + 48,
-      required: pageWidth - m - 75,
-      received: pageWidth - m - 33,
+      required: pageWidth - m - 65,
+      received: pageWidth - m - 20,
     };
 
     // Table header - blue background, black bold text
@@ -155,7 +155,7 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
       doc.text('REQUIRED', col.required, yPos);
       doc.text('RECEIVED', col.received, yPos);
       // Subtitle row
-      doc.setFontSize(6);
+      doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 116, 139);
       doc.text('Resolution', col.required, yPos + 3.5);
@@ -200,7 +200,7 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
       }
 
       if (i % 2 === 0) {
-        doc.setFillColor(252, 252, 253);
+        doc.setFillColor(245, 245, 245);
         doc.rect(m, y - 2, pageWidth - m * 2, rowH, 'F');
       }
 
@@ -253,20 +253,24 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
     doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(15, 23, 42);
-    doc.text('Specs:', m + 3, y + 3);
+    doc.text('Specs Required:', m + 3, y + 3);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(15, 23, 42);
-    doc.text('High Quality JPG or PNG  -  72 DPI  -  Exact pixel dimensions as listed above', m + 16, y + 3);
+    doc.text('High Quality JPG or PNG  -  72 DPI  -  Please maintain the required resolution as mentioned above.', m + 24, y + 3);
+    
     // Action required line
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(15, 23, 42);
-    doc.text('Action Required: Please revise the sizes and resubmit.', m + 3, y + 8);
-
+    doc.text('Action Required:', m + 3, y + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(15, 23, 42);
+    doc.text('Please revise the sizes and resubmit.', m + 24, y + 8);
+    
     // Footer line
     const fy = pageHeight - 6;
     doc.setDrawColor(180, 180, 180);
     doc.setLineWidth(0.2);
-    doc.line(m, fy - 3, pageWidth - m, fy - 3);
+    doc.line(m, fy - 5, pageWidth - m, fy - 5);
     // Page number below the line
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(120, 120, 120);
