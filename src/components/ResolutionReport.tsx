@@ -139,7 +139,7 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
       thumb: m + 7,
       fileName: m + 48,
       required: pageWidth - m - 65,
-      received: pageWidth - m - 20,
+      received: pageWidth - m - 25,
     };
 
     // Table header - blue background, black bold text
