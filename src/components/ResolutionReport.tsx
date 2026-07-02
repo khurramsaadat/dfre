@@ -18,7 +18,7 @@ interface ResolutionReportProps {
 
 export default function ResolutionReport({ boxes, promoTitle }: ResolutionReportProps) {
   const reportRef = useRef<HTMLDivElement>(null);
-  const [lightTheme, setLightTheme] = useState(false);
+  const [lightTheme, setLightTheme] = useState(true);
 
   const totalWithImages = boxes.filter((b) => b.image).length;
   const mismatched = boxes.filter(
@@ -126,12 +126,12 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
     const countText = `${mismatched.length} of ${totalWithImages} image${totalWithImages !== 1 ? 's' : ''} require correction`;
     doc.text(countText, pageWidth - m, y, { align: 'right' });
 
-    // Separator
+    // Separator - darker for print visibility
     y += 4;
-    doc.setDrawColor(225, 225, 225);
-    doc.setLineWidth(0.2);
+    doc.setDrawColor(180, 180, 180);
+    doc.setLineWidth(0.3);
     doc.line(m, y, pageWidth - m, y);
-    y += 5;
+    y += 7;
 
     // Column positions
     const col = {
@@ -174,7 +174,7 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
     for (const box of mismatched) {
       if (box.image && box.imageSize) {
         try {
-          const scaled = await downscaleImage(box.image, 300, 200, 0.65);
+          const scaled = await downscaleImage(box.image, 900, 600, 0.7);
           thumbData.push(scaled);
         } catch { thumbData.push(null); }
       } else {
@@ -204,11 +204,11 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
         doc.rect(m, y - 2, pageWidth - m * 2, rowH, 'F');
       }
 
-      // Row number - vertically centered
+      // Row number - vertically centered, darker for print
       const textY = y + rowH / 2 + 1;
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
-      doc.setTextColor(160, 160, 160);
+      doc.setTextColor(80, 80, 80);
       doc.text(`${i + 1}`, col.num, textY);
 
       // Thumbnail - downscaled for small file size
@@ -237,41 +237,39 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
         doc.text(`${box.imageSize.width} x ${box.imageSize.height} px`, col.received, textY);
       }
 
-      // Row separator
-      doc.setDrawColor(242, 242, 242);
-      doc.setLineWidth(0.1);
+      // Row separator - darker for print visibility
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.15);
       doc.line(m, y + rowH - 2, pageWidth - m, y + rowH - 2);
 
       y += rowH;
     }
 
-    // Specs box - same blue as column headers
+    // Specs box - same blue as column headers, black text
     y += 3;
-    if (y + 12 > pageHeight - 14) { doc.addPage(); y = 12; }
+    if (y + 16 > pageHeight - 14) { doc.addPage(); y = 12; }
     doc.setFillColor(219, 234, 254);
-    doc.roundedRect(m, y - 2, pageWidth - m * 2, 10, 1.5, 1.5, 'F');
+    doc.roundedRect(m, y - 2, pageWidth - m * 2, 14, 1.5, 1.5, 'F');
     doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(80, 80, 80);
-    doc.text('Specs:', m + 3, y + 4);
+    doc.setTextColor(15, 23, 42);
+    doc.text('Specs:', m + 3, y + 3);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(110, 110, 110);
-    doc.text('High Quality JPG or PNG  -  72 DPI  -  Exact pixel dimensions as listed above', m + 16, y + 4);
-
-    // Footer
-    const fy = pageHeight - 6;
-    // "Please revise" above the line
-    doc.setFontSize(7.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text('High Quality JPG or PNG  -  72 DPI  -  Exact pixel dimensions as listed above', m + 16, y + 3);
+    // Action required line
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(30, 30, 30);
-    doc.text('Please revise the sizes and resubmit.', m, fy - 5);
+    doc.setTextColor(15, 23, 42);
+    doc.text('Action Required: Please revise the sizes and resubmit.', m + 3, y + 8);
+
     // Footer line
-    doc.setDrawColor(235, 235, 235);
+    const fy = pageHeight - 6;
+    doc.setDrawColor(180, 180, 180);
     doc.setLineWidth(0.2);
     doc.line(m, fy - 3, pageWidth - m, fy - 3);
     // Page number below the line
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(170, 170, 170);
+    doc.setTextColor(120, 120, 120);
     doc.text(`Page 1 of ${doc.getNumberOfPages()}`, pageWidth - m, fy, { align: 'right' });
 
     const fileName = promoTitle

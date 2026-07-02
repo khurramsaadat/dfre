@@ -191,3 +191,13 @@ _Log all user inputs here with timestamps (YYYY-MM-DD HH:mm) as per project rule
   - Root cause: full-resolution images embedded as-is (e.g. 2667x1500px)
   - Fix: downscale all thumbnails to 300px wide at 65% JPEG quality before embedding
   - Expected PDF size reduction from ~23MB to under 500KB
+
+2026-07-02 10:32:
+- User requested multiple changes:
+  - Default theme for Resolution Report changed to DAY (light) instead of dark
+  - PDF: Specs text changed from grey to black
+  - PDF: Added "Action Required: Please revise the sizes and resubmit." under specs
+  - PDF: Removed old "Please revise" from bottom footer area
+  - PDF: More gap between separator line and ARTWORKS column header
+  - PDF: Darker grey text (row numbers) and darker horizontal lines for print visibility
+  - PDF: Footer line and page number text made darker
