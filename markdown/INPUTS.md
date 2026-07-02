@@ -185,3 +185,9 @@ _Log all user inputs here with timestamps (YYYY-MM-DD HH:mm) as per project rule
   - Column header titles bigger, black text, blue background (#DBEAFE)
   - Specs box same blue background as column headers
   - "Please revise the sizes and resubmit" moved above footer line, changed from red to black
+
+2026-07-02 10:04:
+- User reported PDF file size too large (23MB for small thumbnails)
+  - Root cause: full-resolution images embedded as-is (e.g. 2667x1500px)
+  - Fix: downscale all thumbnails to 300px wide at 65% JPEG quality before embedding
+  - Expected PDF size reduction from ~23MB to under 500KB

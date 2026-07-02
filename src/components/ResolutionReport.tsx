@@ -71,6 +71,30 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
     toggleHoverBg: dark ? 'rgba(255,255,255,0.12)' : '#cbd5e1',
   };
 
+  // Downscale image to thumbnail size for PDF to reduce file size
+  const downscaleImage = (src: string, maxW: number, maxH: number, quality: number = 0.7): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
+        const w = Math.round(img.width * ratio);
+        const h = Math.round(img.height * ratio);
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } else {
+          resolve(src);
+        }
+      };
+      img.onerror = () => resolve(src);
+      img.src = src;
+    });
+  };
+
   const handleDownloadPDF = async () => {
     if (mismatched.length === 0) return;
 
@@ -145,6 +169,19 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
     const thumbFixedW = 35;
     const thumbMaxH = 20;
 
+    // Pre-downscale all thumbnails to ~300px wide for small PDF file size
+    const thumbData: (string | null)[] = [];
+    for (const box of mismatched) {
+      if (box.image && box.imageSize) {
+        try {
+          const scaled = await downscaleImage(box.image, 300, 200, 0.65);
+          thumbData.push(scaled);
+        } catch { thumbData.push(null); }
+      } else {
+        thumbData.push(null);
+      }
+    }
+
     for (let i = 0; i < mismatched.length; i++) {
       const box = mismatched[i];
 
@@ -174,10 +211,10 @@ export default function ResolutionReport({ boxes, promoTitle }: ResolutionReport
       doc.setTextColor(160, 160, 160);
       doc.text(`${i + 1}`, col.num, textY);
 
-      // Thumbnail - fixed width, proportional height
-      if (box.image && box.imageSize) {
+      // Thumbnail - downscaled for small file size
+      if (thumbData[i]) {
         try {
-          doc.addImage(box.image, 'JPEG', col.thumb, y + (rowH - thumbH) / 2 - 1, thumbFixedW, thumbH);
+          doc.addImage(thumbData[i]!, 'JPEG', col.thumb, y + (rowH - thumbH) / 2 - 1, thumbFixedW, thumbH);
         } catch { /* skip corrupt images */ }
       }
 
