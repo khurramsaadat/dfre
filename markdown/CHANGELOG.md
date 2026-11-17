@@ -2,6 +2,71 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2026-11-17
+
+### Fixed – Full App Bug Review
+- **File input not resetting after selection** – All 6 layout pages (DM6, DM6 V2, DM3, DM3 V2, Design Studio, Design Studio V2) did not reset the file input `value` after a file was picked. Selecting the same file twice in a row would silently fail because the browser's `onChange` doesn't fire when the value hasn't changed. Fixed by adding `event.target.value = ''` after processing.
+- **Aspect ratio badge visible in captured JPG** – The persistent red "Aspect Ratio Mismatch" badge rendered inside exported images. Fixed by:
+  - Adding `.aspect-ratio-badge` class to all badge elements
+  - DM pages: querying and hiding `.aspect-ratio-badge` elements during capture, restoring after
+  - Design Studio pages: adding `.capturing .aspect-ratio-badge { display: none !important; }` CSS rule
+
+### Reviewed – No Issues Found
+- Console errors: 0 on all 9 pages (/, /dm6assets, /dm6assets-v2, /dm3assets, /dm3assets-v2, /design-studio, /design-studio-v2, /artwork-qc, /locations)
+- Linter: 0 errors across all edited files
+- TypeScript: 0 type errors (build passes)
+- Navigation: all dropdown links route correctly, all footer links wire correctly
+- Homepage cards link to correct pages (/dm6assets, /dm3assets, /design-studio)
+- Typewriter animation cycles correctly
+- Artwork QC: drag/drop, toggle, reset all functional (already had file input reset)
+
+## [0.5.0] - 2026-11-17
+
+### Changed – Navbar Restructured into Dropdown Groups
+- **Header.tsx** rewritten with hover-to-open dropdown menus:
+  - **Home** (standalone top-level link)
+  - **DM Submission ▾** → DM 6 Assets, DM 6 Assets V2, DM 3 Assets, DM 3 Assets V2
+  - **Publish ▾** → Design Studio, Design Studio V2
+  - **Tools ▾** → Artwork QC, Locations
+- Desktop: hover-to-open panels with `scale-y` + opacity transition, close on click-outside / Escape
+- Active group trigger highlighted when any child route matches `pathname`
+- Mobile: accordion-style collapsible groups with chevron rotation, body scroll lock, copyright at bottom
+- **Footer.tsx** restructured into grouped columns: DM SUBMISSION, PUBLISH, TOOLS, CONTACT US
+- Social icons moved to centered row above copyright line
+
+### Changed – Box Dimension Text Enlarged
+- Dimension text inside empty boxes increased from `text-sm` (14px) → `text-xl` (20px) + `font-semibold`
+- Applied to all 6 layout files: DM6, DM6 V2, DM3, DM3 V2, Design Studio, Design Studio V2
+
+### Added – Aspect Ratio Validation with Persistent Warning Badge
+- When an image is dropped/loaded into a box, aspect ratio is validated against the box's expected ratio
+- **3% relative tolerance**: `|r1 - r2| / avg(r1, r2) <= 0.03`
+- Image still loads and resizes to fit (size differences are acceptable)
+- Persistent red badge ("Aspect Ratio Mismatch") overlays top-right corner of the box when AR doesn't match
+- Badge is `pointer-events-none` so it doesn't interfere with hover/click interactions
+- Applied to all 6 layout pages (DM6, DM6 V2, DM3, DM3 V2, Design Studio, Design Studio V2)
+
+### Technical
+- Build verified: 11 routes compile, 0 console errors
+- New icon import: `ChevronDownIcon`, `WrenchScrewdriverIcon` from `@heroicons/react/24/outline`
+
+## [0.4.5] - 2026-11-17
+
+### Added
+- **Design Studio V2 page** (`/design-studio-v2`)
+  - Duplicated Design Studio with new box sizes: Box 1 (672×384), Box 2 (1248×768), Box 3 (768×192)
+  - Canvas recalculated: 1920×960 (was 1920×900)
+  - All features carried over: drag/drop, advertisement number overlay, DS Image Name, text color picker, capture, Load Dubai Logos
+  - Capture filename suffix: `_V2.jpg`
+- Added box dimensions text to original Design Studio page (consistency with all layout pages)
+- Added "Design Studio V2" link to Header navbar (after Design Studio) with DocumentDuplicateIcon
+- Added "Design Studio V2" link to Footer quick links
+- Updated mobile menu with new link and recalculated staggered animation delays (500ms–800ms)
+
+### Technical
+- Build verified: 11 routes compile (/, /_not-found, /artwork-qc, /design-studio, /design-studio-v2, /dm3assets, /dm3assets-v2, /dm6assets, /dm6assets-v2, /locations)
+- Browser tested via Playwright MCP: 0 console errors
+
 ## [0.1.0] - 2024-04-25
 
 ### Added
@@ -641,6 +706,85 @@ dfre-layout-factory/
   tailwind.config.js
   tsconfig.json
 ```
+
+## [0.4.4] - 2026-11-17
+
+### Added
+- **DM 3 Assets V2 page** – duplicated from DM 3 Assets with different box sizes
+  - New route: `/dm3assets-v2` with `DM3AssetsV2HeroLayout` component
+  - Box 1: 672 × 384 px, Box 2: 1248 × 768 px, Box 3: 768 × 192 px
+  - Canvas: 1968 × 1818 px (all boxes horizontally centered, same spacing as DM3)
+  - All features carried over: drag/drop upload, image capture, resolution report, Load Dubai Logos
+  - Captured images prefixed with `DM_Approval_V2_`
+- Added "DM 3 Assets V2" navigation link with DocumentDuplicateIcon
+  - Desktop navbar: positioned after DM 3 Assets
+  - Mobile menu: staggered fade-in animation at 400ms delay
+  - Footer quick links: positioned after DM 3 Assets
+- **Box dimensions in empty boxes** – added to ALL layout pages
+  - Shows "{width} × {height}" between Box number and "Drag & Drop" text
+  - Applied to: DM 6 Assets, DM 6 Assets V2, DM 3 Assets, DM 3 Assets V2
+  - Provides quick visual reference for required image sizes
+
+### Technical Details
+- New component: `src/components/DM3AssetsV2HeroLayout.tsx`
+- New page: `src/app/dm3assets-v2/page.tsx`
+- Updated: `src/components/Header.tsx` (new nav link + mobile menu)
+- Updated: `src/components/Footer.tsx` (new quick link)
+- Updated: `src/components/DM6AssetsHeroLayout.tsx` (box dimensions)
+- Updated: `src/components/DM6AssetsV2HeroLayout.tsx` (box dimensions)
+- Updated: `src/components/DM3AssetsHeroLayout.tsx` (box dimensions)
+- Build verified: 10 routes compile successfully, 0 console errors
+
+## [0.4.3] - 2026-11-17
+
+### Added
+- **DM 6 Assets V2 page** – duplicated from DM 6 Assets with different box sizes
+  - New route: `/dm6assets-v2` with `DM6AssetsV2HeroLayout` component
+  - Box 1 & 4: 672 × 384 px
+  - Box 2 & 5: 1248 × 768 px
+  - Box 3 & 6: 768 × 192 px
+  - Canvas: 3045 × 1818 px (recalculated positions maintaining same spacing pattern)
+  - Box positions recalculated: 228px left margin, 139px top margin, 94px row 1→2 gap, 100px row 2→3 gap, 93px column gap
+  - All features carried over: drag/drop upload, image capture as JPG, resolution report, Load Dubai Logos
+  - Captured images prefixed with `DM_Approval_V2_`
+  - Load Dubai Logos uses existing placeholder images (proper V2 images to be provided later)
+- Added "DM 6 Assets V2" navigation link with DocumentDuplicateIcon
+  - Desktop navbar: positioned after DM 6 Assets
+  - Mobile menu: staggered fade-in animation at 200ms delay
+  - Footer quick links: positioned after DM 6 Assets
+  - Active state highlighting consistent with other nav links
+
+### Technical Details
+- New component: `src/components/DM6AssetsV2HeroLayout.tsx`
+- New page: `src/app/dm6assets-v2/page.tsx`
+- Updated: `src/components/Header.tsx` (new nav link + mobile menu entry)
+- Updated: `src/components/Footer.tsx` (new quick link)
+- Build verified: 9 routes compile successfully, 0 console errors
+
+## [0.4.2] - 2026-11-17
+
+### Changed
+- Updated all npm dependencies within semver range (safe, non-breaking updates):
+  - next: 16.1.6 → 16.4.6
+  - react: 19.2.4 → 19.3.1
+  - react-dom: 19.2.4 → 19.3.1
+  - jspdf: 4.1.0 → 4.2.1
+  - eslint-config-next: 16.1.6 → 16.4.6
+  - eslint: 9.39.2 → 9.39.5
+  - @types/node: 22.19.7 → 22.20.5
+  - @types/react: 19.2.10 → 19.3.0
+  - @types/react-dom: 19.2.3 → 19.3.0
+  - autoprefixer: 10.4.21 → 10.6.2
+  - postcss: 8.5.3 → 8.5.33
+  - tailwindcss: 3.4.17 → 3.4.19
+  - typescript: 5.8.3 → 5.9.3
+
+### Technical Details
+- Skipped major version jumps (would require migration): Tailwind CSS v4.3.5, TypeScript v7.0.2, ESLint v10.15.0, @types/node v26.6.6
+- Build verified with Next.js 16.4.6 (Turbopack), all 8 routes compile successfully
+- 0 npm vulnerabilities
+- 0 browser console errors
+- Commands used: `npm update`, `npm outdated`, `npx next build`, `npm run dev`
 
 ## [0.4.1] - 2026-06-10
 

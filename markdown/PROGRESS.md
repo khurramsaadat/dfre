@@ -277,3 +277,69 @@
   - Red X status column for quick visual indicator on each row
   - Print-friendly light theme toggle (sun/moon icon switches white/dark backgrounds)
   - All features applied consistently in both UI and PDF output
+
+## 2026-11-17
+- Dependency update session: Updated all npm packages within semver range
+  - next: 16.1.6 → 16.4.6
+  - react: 19.2.4 → 19.3.1
+  - react-dom: 19.2.4 → 19.3.1
+  - jspdf: 4.1.0 → 4.2.1
+  - eslint-config-next: 16.1.6 → 16.4.6
+  - eslint: 9.39.2 → 9.39.5
+  - @types/node: 22.19.7 → 22.20.5
+  - @types/react: 19.2.10 → 19.3.0
+  - @types/react-dom: 19.2.3 → 19.3.0
+  - autoprefixer: 10.4.21 → 10.6.2
+  - postcss: 8.5.3 → 8.5.33
+  - tailwindcss: 3.4.17 → 3.4.19
+  - typescript: 5.8.3 → 5.9.3
+- Skipped major version jumps (require migration): Tailwind v4, TypeScript v7, ESLint v10, @types/node v26
+- Build verified: Next.js 16.4.6 (Turbopack), all 8 routes compile, 0 vulnerabilities
+- Dev server started and browser-tested via Playwright MCP - 0 console errors
+- Created DM 6 Assets V2 page (duplicate of DM6 with different box sizes)
+  - New route: /dm6assets-v2
+  - New component: DM6AssetsV2HeroLayout.tsx
+  - Box sizes: 672x384 (Box 1&4), 1248x768 (Box 2&5), 768x192 (Box 3&6)
+  - Canvas: 3045 x 1818 (recalculated with same spacing pattern as DM6)
+  - Added to Header navbar (after DM 6 Assets, with DocumentDuplicateIcon)
+  - Added to Footer quick links
+  - Mobile menu updated with staggered animation delays
+  - All features carried over: drag/drop, capture, resolution report, Load Dubai Logos
+  - Build verified: 9 routes compile, 0 console errors
+- Created DM 3 Assets V2 page (duplicate of DM3 with new box sizes)
+  - New route: /dm3assets-v2
+  - New component: DM3AssetsV2HeroLayout.tsx
+  - Box sizes: 672x384 (Box 1), 1248x768 (Box 2), 768x192 (Box 3)
+  - Canvas: 1968 x 1818 (all boxes horizontally centered, same spacing as DM3)
+  - Added to Header navbar (after DM 3 Assets, with DocumentDuplicateIcon)
+  - Added to Footer quick links, mobile menu with staggered animations
+- Added box dimensions text to ALL layout pages (DM6, DM6 V2, DM3, DM3 V2, Design Studio, Design Studio V2)
+  - Shows "{width} × {height}" above "Drag & Drop" in empty boxes
+  - Provides quick visual reference for required image sizes
+  - Build verified: 10 routes compile, 0 console errors
+- Created Design Studio V2 page (duplicate of Design Studio with new box sizes)
+  - New route: /design-studio-v2
+  - Box sizes: Box 1 (672×384), Box 2 (1248×768), Box 3 (768×192)
+  - Canvas: 1920×960 (Box 2 + Box 1 = 1920 wide, Box 2 + Box 3 = 960 tall)
+  - Added to Header navbar (after Design Studio, with DocumentDuplicateIcon)
+  - Added to Footer quick links, mobile menu with staggered animations
+  - All features carried over: drag/drop, advertisement number overlay, DS Image Name, capture, Load Dubai Logos
+  - Capture filename suffix changed to `_V2.jpg`
+  - Build verified: 11 routes compile, 0 console errors
+
+### Session 6 – Navbar Dropdowns, Dimension Text, Aspect Ratio Validation
+- [x] Increased box dimension text from text-sm (14px) → text-xl (20px) + font-semibold on all 6 layout pages
+- [x] Added persistent red warning badge ("Aspect Ratio Mismatch") on boxes when dropped image AR doesn't match (3% relative tolerance)
+  - Applied to: DM6, DM6 V2, DM3, DM3 V2, Design Studio, Design Studio V2
+  - Image still loads and resizes; badge is informational overlay
+- [x] Restructured Header.tsx with dropdown groups:
+  - Home (standalone) | DM Submission ▾ | Publish ▾ | Tools ▾
+  - Hover-to-open desktop dropdowns with smooth scale/opacity animation
+  - Close on click-outside or Escape key
+  - Active group highlighting when any child route is current
+- [x] Restructured mobile menu as accordion groups (collapsible sections with chevron)
+  - Body scroll lock when mobile menu is open
+  - Copyright info at bottom of mobile menu
+- [x] Restructured Footer.tsx with grouped columns: DM SUBMISSION, PUBLISH, TOOLS, CONTACT US
+  - Social icons moved to centered row above copyright
+- [x] Build verified: 11 routes compile, 0 console errors

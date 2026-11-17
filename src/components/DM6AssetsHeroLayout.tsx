@@ -77,6 +77,8 @@ export default function DM6AssetsHeroLayout() {
       };
       reader.readAsDataURL(file);
     }
+    // Reset so the same file can be selected again
+    event.target.value = '';
   };
 
   const handleDragEnter = (e: React.DragEvent, index: number) => {
@@ -139,6 +141,12 @@ export default function DM6AssetsHeroLayout() {
           (info as HTMLElement).style.display = 'none';
         });
 
+        // Hide aspect ratio warning badges during capture
+        const arBadges = layoutRef.current.querySelectorAll('.aspect-ratio-badge');
+        arBadges.forEach((badge: Element) => {
+          (badge as HTMLElement).style.display = 'none';
+        });
+
         const html2canvas = (await import('html2canvas')).default;
         const canvas = await html2canvas(layoutRef.current, {
           scale: 1,
@@ -172,6 +180,9 @@ export default function DM6AssetsHeroLayout() {
         });
         imageSizeInfo.forEach((info: Element) => {
           (info as HTMLElement).style.display = '';
+        });
+        arBadges.forEach((badge: Element) => {
+          (badge as HTMLElement).style.display = '';
         });
 
         // Download with prefixed filename
@@ -210,10 +221,11 @@ export default function DM6AssetsHeroLayout() {
     return width / height;
   };
 
-  const aspectRatioMatches = (w1: number, h1: number, w2: number, h2: number, tolerance = 0.01): boolean => {
+  const aspectRatioMatches = (w1: number, h1: number, w2: number, h2: number, tolerancePercent = 0.03): boolean => {
     const r1 = aspectRatioDecimal(w1, h1);
     const r2 = aspectRatioDecimal(w2, h2);
-    return Math.abs(r1 - r2) <= tolerance;
+    const avg = (r1 + r2) / 2;
+    return avg === 0 ? true : Math.abs(r1 - r2) / avg <= tolerancePercent;
   };
 
   // Load Dubai Logos function - loads specific images to specific boxes
@@ -393,6 +405,9 @@ export default function DM6AssetsHeroLayout() {
                     <div className="font-bold text-base mb-2" style={{marginTop: 8}}>
                       Box {index + 1}
                     </div>
+                    <div className="text-xl text-gray-400 mb-1 font-semibold">
+                      {box.width} × {box.height}
+                    </div>
                     <div className="font-bold text-2xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
                       Drag & Drop
                     </div>
@@ -404,6 +419,15 @@ export default function DM6AssetsHeroLayout() {
                     </div>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-b from-blue-500/0 via-blue-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-blue-500/5 group-hover:to-blue-500/10 transition-all duration-300" />
+                </div>
+              )}
+              {/* Persistent aspect ratio warning badge */}
+              {box.image && box.imageSize && !aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) && (
+                <div className="aspect-ratio-badge absolute top-2 right-2 z-10 bg-red-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 pointer-events-none">
+                  <svg width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  Aspect Ratio Mismatch
                 </div>
               )}
               <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-300" />

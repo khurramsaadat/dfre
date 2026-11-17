@@ -78,6 +78,14 @@ export default function DesignStudio() {
     y: box3Position.y + boxes.box3.height - 45   // 35px from bottom edge of Box3
   };
 
+  // Aspect ratio validation (3% tolerance)
+  const aspectRatioMatches = (w1: number, h1: number, w2: number, h2: number, tolerancePercent = 0.03): boolean => {
+    const r1 = w1 / h1;
+    const r2 = w2 / h2;
+    const avg = (r1 + r2) / 2;
+    return avg === 0 ? true : Math.abs(r1 - r2) / avg <= tolerancePercent;
+  };
+
   const handleBoxClick = (boxKey: keyof BoxState) => {
     setCurrentBox(boxKey);
     fileInputRef.current?.click();
@@ -88,6 +96,7 @@ export default function DesignStudio() {
     if (file && currentBox) {
       handleImageFile(file, currentBox);
     }
+    event.target.value = '';
   };
 
   const handleImageFile = (file: File, targetBox: keyof BoxState) => {
@@ -387,6 +396,9 @@ export default function DesignStudio() {
             <div className="font-bold text-base mb-2" style={{marginTop: 8}}>
               Box {boxKey.slice(-1)}
             </div>
+            <div className="text-xl text-gray-400 mb-1 font-semibold">
+              {box.width} × {box.height}
+            </div>
             <div className="font-bold text-2xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
               Drag & Drop
             </div>
@@ -398,6 +410,15 @@ export default function DesignStudio() {
             </div>
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-blue-500/0 via-blue-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-blue-500/5 group-hover:to-blue-500/10 transition-all duration-300 capturing:opacity-0" />
+        </div>
+      )}
+      {/* Persistent aspect ratio warning badge – hidden during capture */}
+      {box.image && box.imageSize && !aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) && (
+        <div className="aspect-ratio-badge absolute top-2 right-2 z-10 bg-red-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 pointer-events-none">
+          <svg width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          Aspect Ratio Mismatch
         </div>
       )}
       <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-300 capturing:opacity-0" />
@@ -436,6 +457,9 @@ export default function DesignStudio() {
           display: none !important;
         }
         .capturing .position-guide {
+          display: none !important;
+        }
+        .capturing .aspect-ratio-badge {
           display: none !important;
         }
         .position-guide {
