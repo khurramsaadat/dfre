@@ -349,15 +349,7 @@ export default function DesignStudioV2() {
 
   const renderBox = (boxKey: keyof BoxState, box: Box) => {
     const hasMismatch = box.image && box.imageSize && (box.imageSize.width !== box.width || box.imageSize.height !== box.height);
-    const pixelDiffW = box.imageSize ? Math.abs(box.imageSize.width - box.width) : 0;
-    const pixelDiffH = box.imageSize ? Math.abs(box.imageSize.height - box.height) : 0;
     const arMatch = box.imageSize ? aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) : true;
-    const arPercent = box.imageSize ? (() => {
-      const r1 = box.imageSize.width / box.imageSize.height;
-      const r2 = box.width / box.height;
-      const avg = (r1 + r2) / 2;
-      return avg === 0 ? 0 : ((Math.abs(r1 - r2) / avg) * 100).toFixed(1);
-    })() : '0';
     const imageRatioDecimal = box.imageSize ? (box.imageSize.width / box.imageSize.height).toFixed(2) : '0.00';
     const boxRatioDecimal = (box.width / box.height).toFixed(2);
 
@@ -384,28 +376,32 @@ export default function DesignStudioV2() {
         onDrop={(e) => handleDrop(e, boxKey)}
       >
         {box.image ? (
-          <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-300">
+          <div className="relative w-full h-full">
             <Image
               src={box.image}
               alt={`Box ${boxKey}`}
               fill
               className="object-contain"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/30 group-hover:via-black/20 group-hover:to-black/30 transition-all duration-300 capturing:opacity-0" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/20 group-hover:via-black/10 group-hover:to-black/30 transition-all duration-300 capturing:opacity-0" />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 capturing:hidden">
-              <div className="bg-white/95 px-5 py-3 rounded-xl shadow-xl transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300 text-center max-w-[90%]">
+              <div className="bg-white/70 backdrop-blur-xl px-5 py-4 rounded-2xl shadow-2xl border border-white/30 transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300 text-center max-w-[90%]">
                 {box.fileName && (
-                  <div className="text-gray-500 text-sm mb-1 truncate" title={box.fileName}>{box.fileName}</div>
+                  <div className="text-gray-500 text-xs tracking-wide mb-1.5 truncate uppercase" title={box.fileName}>{box.fileName}</div>
                 )}
-                <div className="text-gray-600 text-sm mb-1">
-                  Image: {box.imageSize ? `${box.imageSize.width}×${box.imageSize.height}` : 'N/A'} · Box: {box.width}×{box.height}
+                <div className="text-gray-700 text-sm font-medium mb-1">
+                  {box.imageSize ? `${box.imageSize.width} × ${box.imageSize.height}` : 'N/A'}
+                  <span className="text-gray-400 mx-1.5">→</span>
+                  {box.width} × {box.height}
                 </div>
                 {box.imageSize && (
-                  <div className="text-gray-600 text-sm mb-1">
-                    Image {calculateAspectRatio(box.imageSize.width, box.imageSize.height)} ({imageRatioDecimal}) · Box {calculateAspectRatio(box.width, box.height)} ({boxRatioDecimal}) · Δ {arPercent}%
+                  <div className="text-sm mb-2" style={{ color: arMatch ? '#059669' : '#dc2626' }}>
+                    {calculateAspectRatio(box.imageSize.width, box.imageSize.height)} ({imageRatioDecimal})
+                    <span className="text-gray-400 mx-1.5">·</span>
+                    {calculateAspectRatio(box.width, box.height)} ({boxRatioDecimal})
                   </div>
                 )}
-                <span className="text-gray-800 font-semibold text-base">Click to Change</span>
+                <span className="text-gray-500 font-medium text-xs tracking-wider uppercase">Click to Change</span>
               </div>
             </div>
           </div>
@@ -458,25 +454,23 @@ export default function DesignStudioV2() {
           <div
             className="image-size-info absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
             style={{
-              fontSize: 13,
-              color: '#eee',
-              backgroundColor: 'rgba(0, 0, 0, 0.55)',
-              padding: '4px 10px',
-              lineHeight: 1.6,
+              fontSize: 12,
+              color: '#f0f0f0',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.35))',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              padding: '5px 10px',
+              lineHeight: 1.7,
             }}
           >
-            <span>Box: {box.width}×{box.height} · Image: {box.imageSize.width}×{box.imageSize.height}</span>
-            {hasMismatch && (
-              <>
-                <span style={{ color: '#fbbf24', marginLeft: 8 }}>Δ {pixelDiffW}×{pixelDiffH}px</span>
-                <span style={{ color: arMatch ? '#4ade80' : '#f87171', marginLeft: 8 }}>
-                  AR {arPercent}% {arMatch ? '✓' : '✗'} (tolerance 3%)
-                </span>
-              </>
-            )}
-            {!hasMismatch && (
-              <span style={{ color: '#4ade80', marginLeft: 8 }}>✓ Perfect match</span>
-            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>Box: {box.width}×{box.height}</span>
+              <span>Image: {box.imageSize.width}×{box.imageSize.height}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: arMatch ? '#4ade80' : '#f87171' }}>
+              <span>Box Aspect Ratio: {calculateAspectRatio(box.width, box.height)} ({boxRatioDecimal})</span>
+              <span>Image Aspect Ratio: {calculateAspectRatio(box.imageSize.width, box.imageSize.height)} ({imageRatioDecimal})</span>
+            </div>
           </div>
         )}
         <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-300 capturing:opacity-0" />

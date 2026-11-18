@@ -1,6 +1,6 @@
 "use client";
 import DM3AssetsHeroLayout from '@/components/DM3AssetsHeroLayout';
 
-export default function DM3Assets() {
+export default function ThreeAssetsPole17() {
   return <DM3AssetsHeroLayout />;
-} 
+}

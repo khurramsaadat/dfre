@@ -8,16 +8,16 @@ interface HeroProps {
 const Hero = ({ hideButtons = false }: HeroProps) => {
   const features = [
     {
-      title: "DM - 6 Assets En & Ar",
+      title: "6 Assets – En & Ar",
       description: "For DM Approval",
       imageUrl: "/images/card1.jpg",
-      href: "/dm6assets"
+      href: "/6-assets-pole-1-7"
     },
     {
-      title: "DM - 3 Assets - Arabic only",
+      title: "3 Assets – Arabic Only",
       description: "For DM Approval",
       imageUrl: "/images/card2.jpg",
-      href: "/dm3assets"
+      href: "/3-assets-pole-1-7"
     },
     {
       title: "DFRE Schedule",

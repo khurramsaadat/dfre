@@ -37,23 +37,23 @@ const Footer = () => {
             <h3 className="text-sm font-bold mb-4 text-white">DM SUBMISSION</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/dm6assets" className={footerLinkClasses('/dm6assets')} style={{ display: 'inline-flex' }}>
-                  <BuildingOffice2Icon className="w-4 h-4 mr-1" aria-hidden="true" /> DM 6 Assets
+                <Link href="/6-assets-pole-1-7" className={footerLinkClasses('/6-assets-pole-1-7')} style={{ display: 'inline-flex' }}>
+                  <BuildingOffice2Icon className="w-4 h-4 mr-1" aria-hidden="true" /> 6 Assets Pole 1-7
                 </Link>
               </li>
               <li>
-                <Link href="/dm6assets-v2" className={footerLinkClasses('/dm6assets-v2')} style={{ display: 'inline-flex' }}>
-                  <DocumentDuplicateIcon className="w-4 h-4 mr-1" aria-hidden="true" /> DM 6 Assets V2
+                <Link href="/6-assets-pole-8-12" className={footerLinkClasses('/6-assets-pole-8-12')} style={{ display: 'inline-flex' }}>
+                  <DocumentDuplicateIcon className="w-4 h-4 mr-1" aria-hidden="true" /> 6 Assets Pole 8-12
                 </Link>
               </li>
               <li>
-                <Link href="/dm3assets" className={footerLinkClasses('/dm3assets')} style={{ display: 'inline-flex' }}>
-                  <DocumentTextIcon className="w-4 h-4 mr-1" aria-hidden="true" /> DM 3 Assets
+                <Link href="/3-assets-pole-1-7" className={footerLinkClasses('/3-assets-pole-1-7')} style={{ display: 'inline-flex' }}>
+                  <DocumentTextIcon className="w-4 h-4 mr-1" aria-hidden="true" /> 3 Assets Pole 1-7
                 </Link>
               </li>
               <li>
-                <Link href="/dm3assets-v2" className={footerLinkClasses('/dm3assets-v2')} style={{ display: 'inline-flex' }}>
-                  <DocumentDuplicateIcon className="w-4 h-4 mr-1" aria-hidden="true" /> DM 3 Assets V2
+                <Link href="/3-assets-pole-8-12" className={footerLinkClasses('/3-assets-pole-8-12')} style={{ display: 'inline-flex' }}>
+                  <DocumentDuplicateIcon className="w-4 h-4 mr-1" aria-hidden="true" /> 3 Assets Pole 8-12
                 </Link>
               </li>
             </ul>

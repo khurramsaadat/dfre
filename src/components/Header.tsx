@@ -35,10 +35,10 @@ const navGroups: NavGroup[] = [
     label: 'DM Submission',
     icon: BuildingOffice2Icon,
     items: [
-      { name: 'DM 6 Assets', href: '/dm6assets', icon: BuildingOffice2Icon },
-      { name: 'DM 6 Assets V2', href: '/dm6assets-v2', icon: DocumentDuplicateIcon },
-      { name: 'DM 3 Assets', href: '/dm3assets', icon: DocumentTextIcon },
-      { name: 'DM 3 Assets V2', href: '/dm3assets-v2', icon: DocumentDuplicateIcon },
+      { name: '6 Assets Pole 1-7', href: '/6-assets-pole-1-7', icon: BuildingOffice2Icon },
+      { name: '6 Assets Pole 8-12', href: '/6-assets-pole-8-12', icon: DocumentDuplicateIcon },
+      { name: '3 Assets Pole 1-7', href: '/3-assets-pole-1-7', icon: DocumentTextIcon },
+      { name: '3 Assets Pole 8-12', href: '/3-assets-pole-8-12', icon: DocumentDuplicateIcon },
     ],
   },
   {

@@ -395,33 +395,32 @@ export default function DM3AssetsV2HeroLayout() {
               onDrop={e => handleDrop(e, index)}
             >
               {box.image ? (
-                <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-300">
+                <div className="relative w-full h-full">
                   <Image
                     src={box.image}
                     alt={`Box ${index + 1}`}
                     fill
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/30 group-hover:via-black/20 group-hover:to-black/30 transition-all duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/20 group-hover:via-black/10 group-hover:to-black/30 transition-all duration-300" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="bg-white/95 px-5 py-3 rounded-xl shadow-xl transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300 text-center max-w-[90%]">
+                    <div className="bg-white/70 backdrop-blur-xl px-5 py-4 rounded-2xl shadow-2xl border border-white/30 transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300 text-center max-w-[90%]">
                       {box.fileName && (
-                        <div className="text-gray-500 text-sm mb-1 truncate" title={box.fileName}>{box.fileName}</div>
+                        <div className="text-gray-500 text-xs tracking-wide mb-1.5 truncate uppercase" title={box.fileName}>{box.fileName}</div>
                       )}
-                      <div className="text-gray-600 text-sm mb-1">
-                        Image: {box.imageSize ? `${box.imageSize.width}×${box.imageSize.height}` : 'N/A'} · Box: {box.width}×{box.height}
+                      <div className="text-gray-700 text-sm font-medium mb-1">
+                        {box.imageSize ? `${box.imageSize.width} × ${box.imageSize.height}` : 'N/A'}
+                        <span className="text-gray-400 mx-1.5">→</span>
+                        {box.width} × {box.height}
                       </div>
                       {box.imageSize && (
-                        <div className="text-gray-600 text-sm mb-1">
-                          Image {calculateAspectRatio(box.imageSize.width, box.imageSize.height)} ({(box.imageSize.width / box.imageSize.height).toFixed(2)}) · Box {calculateAspectRatio(box.width, box.height)} ({(box.width / box.height).toFixed(2)}) · Δ {(() => {
-                            const r1 = box.imageSize.width / box.imageSize.height;
-                            const r2 = box.width / box.height;
-                            const avg = (r1 + r2) / 2;
-                            return avg === 0 ? '0.0' : ((Math.abs(r1 - r2) / avg) * 100).toFixed(1);
-                          })()}%
+                        <div className="text-sm mb-2" style={{ color: aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) ? '#059669' : '#dc2626' }}>
+                          {calculateAspectRatio(box.imageSize.width, box.imageSize.height)} ({(box.imageSize.width / box.imageSize.height).toFixed(2)})
+                          <span className="text-gray-400 mx-1.5">·</span>
+                          {calculateAspectRatio(box.width, box.height)} ({(box.width / box.height).toFixed(2)})
                         </div>
                       )}
-                      <span className="text-gray-800 font-semibold text-base">Click to Change</span>
+                      <span className="text-gray-500 font-medium text-xs tracking-wider uppercase">Click to Change</span>
                     </div>
                   </div>
                   {/* Fit to Screen button */}
@@ -436,6 +435,30 @@ export default function DM3AssetsV2HeroLayout() {
                       </svg>
                       Fit to Screen
                     </button>
+                  )}
+                  {/* Inside-box info bar */}
+                  {box.imageSize && (
+                    <div
+                      className="image-size-info absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
+                      style={{
+                        fontSize: 12,
+                        color: '#f0f0f0',
+                        background: 'linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.35))',
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                        padding: '5px 10px',
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>Box: {box.width}×{box.height}</span>
+                        <span>Image: {box.imageSize.width}×{box.imageSize.height}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) ? '#4ade80' : '#f87171' }}>
+                        <span>Box Aspect Ratio: {calculateAspectRatio(box.width, box.height)} ({(box.width / box.height).toFixed(2)})</span>
+                        <span>Image Aspect Ratio: {calculateAspectRatio(box.imageSize.width, box.imageSize.height)} ({(box.imageSize.width / box.imageSize.height).toFixed(2)})</span>
+                      </div>
+                    </div>
                   )}
                 </div>
               ) : (
@@ -470,39 +493,6 @@ export default function DM3AssetsV2HeroLayout() {
                 </div>
               )}
               <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-300" />
-            </div>
-            {/* Size Information */}
-            <div
-              className="image-size-info"
-              style={{
-                position: 'absolute',
-                left: box.left,
-                top: box.top + box.height + 5,
-                fontSize: 12,
-                color: '#666',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                padding: '2px 6px',
-                borderRadius: 4,
-                zIndex: 5,
-                transition: 'all 0.3s ease-in-out'
-              }}
-            >
-              <div style={{ marginBottom: 2 }}>
-                Screen Size: {box.width}x{box.height}px - Screen Aspect Ratio: {calculateAspectRatio(box.width, box.height)}
-              </div>
-              <div>
-                Image Size: {box.imageSize ? `${box.imageSize.width}x${box.imageSize.height}px - Image Aspect Ratio: ${calculateAspectRatio(box.imageSize.width, box.imageSize.height)}` : 'N/A - Image Aspect Ratio: N/A'}
-              </div>
-              {box.imageSize && (box.imageSize.width !== box.width || box.imageSize.height !== box.height) ? (
-                <div style={{ color: '#ff4444', marginTop: 2 }}>
-                  ⚠️ Image size doesn't match screen size
-                  {aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) ? (
-                    <span style={{ color: '#00aa00', marginLeft: 4 }}>✓ Aspect ratio matches</span>
-                  ) : (
-                    <span style={{ color: '#ff4444', marginLeft: 4 }}>⚠️ Aspect ratio doesn't match</span>
-                  )}
-                </div>
-              ) : null}
             </div>
           </div>
         ))}

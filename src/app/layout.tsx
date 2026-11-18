@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   keywords: [
     'Layout Factory',
     'DM',
-    'DM 6 Assets',
-    'DM 3 Assets',
+    '6 Assets Pole 1-7',
+    '3 Assets Pole 1-7',
     'Design Studio',
     'DFRE Templates',
     'Layout Creation',
