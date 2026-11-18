@@ -21,9 +21,9 @@ const Hero = ({ hideButtons = false }: HeroProps) => {
     },
     {
       title: "DFRE Schedule",
-      description: "Design Studio layouts",
+      description: "Pole layouts for publishing",
       imageUrl: "/images/card3.jpg",
-      href: "/design-studio"
+      href: "/pole-1-7"
     }
   ];
 

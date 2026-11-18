@@ -45,8 +45,8 @@ const navGroups: NavGroup[] = [
     label: 'Publish',
     icon: PencilIcon,
     items: [
-      { name: 'Design Studio', href: '/design-studio', icon: PencilIcon },
-      { name: 'Design Studio V2', href: '/design-studio-v2', icon: DocumentDuplicateIcon },
+      { name: 'Pole 1-7', href: '/pole-1-7', icon: PencilIcon },
+      { name: 'Pole 8-12', href: '/pole-8-12', icon: DocumentDuplicateIcon },
     ],
   },
   {

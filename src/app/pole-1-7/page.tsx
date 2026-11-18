@@ -10,6 +10,7 @@ type Box = {
   top: number;
   image?: string;
   imageSize?: { width: number; height: number };
+  fileName?: string;
 };
 
 type BoxState = {
@@ -23,9 +24,7 @@ type Position = {
   y: number;
 };
 
-// V2 box sizes: Box 1 = 672x384, Box 2 = 1248x768, Box 3 = 768x192
-// Canvas: 1248 + 672 = 1920 wide, 768 + 192 = 960 tall
-export default function DesignStudioV2() {
+export default function DesignStudio() {
   const [currentBox, setCurrentBox] = useState<keyof BoxState | null>(null);
   const [dragTarget, setDragTarget] = useState<keyof BoxState | null>(null);
   const [dsImageName, setDsImageName] = useState('');
@@ -33,24 +32,24 @@ export default function DesignStudioV2() {
   const [advNumber, setAdvNumber] = useState('');
   const [boxes, setBoxes] = useState<BoxState>({
     box1: {
-      width: 672,
-      height: 384,
+      width: 640,
+      height: 360,
       left: 0,
       top: 0,
       image: undefined,
       imageSize: undefined
     },
     box2: {
-      width: 1248,
-      height: 768,
+      width: 1280,
+      height: 720,
       left: 0,
       top: 0,
       image: undefined,
       imageSize: undefined
     },
     box3: {
-      width: 768,
-      height: 192,
+      width: 800,
+      height: 180,
       left: 0,
       top: 0,
       image: undefined,
@@ -59,8 +58,8 @@ export default function DesignStudioV2() {
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [scale, setScale] = useState(1);
-  const layoutWidth = 1248;
-  const layoutHeight = 768;
+  const layoutWidth = 1280; // Box2 width
+  const layoutHeight = 720; // Box2 height
   const canvasRef = useRef<HTMLDivElement>(null);
   const [advPosition, setAdvPosition] = useState<Position>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -70,14 +69,14 @@ export default function DesignStudioV2() {
 
   // Calculate Box3's position in the canvas
   const box3Position = {
-    x: 0,
-    y: boxes.box2.height
+    x: 0,  // Box3 starts from left edge
+    y: boxes.box2.height  // Box3 starts after Box2's height
   };
 
-  // Default position: lower right corner of Box3
+  // Update default position to be in lower right corner of Box3
   const defaultAdvPosition: Position = { 
-    x: box3Position.x + boxes.box3.width - 220,
-    y: box3Position.y + boxes.box3.height - 45
+    x: box3Position.x + boxes.box3.width - 220,  // 200px from right edge of Box3
+    y: box3Position.y + boxes.box3.height - 45   // 35px from bottom edge of Box3
   };
 
   // Aspect ratio validation (3% tolerance)
@@ -102,6 +101,7 @@ export default function DesignStudioV2() {
   };
 
   const handleImageFile = (file: File, targetBox: keyof BoxState) => {
+    const fileName = file.name;
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new window.Image();
@@ -114,13 +114,45 @@ export default function DesignStudioV2() {
             imageSize: {
               width: img.width,
               height: img.height
-            }
+            },
+            fileName,
           }
         }));
       };
       img.src = typeof e.target?.result === 'string' ? e.target.result : '';
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleFitToScreen = (boxKey: keyof BoxState) => {
+    const box = boxes[boxKey];
+    if (!box.image) return;
+    const img = new window.Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = box.width;
+      canvas.height = box.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, box.width, box.height);
+        const resizedData = canvas.toDataURL('image/jpeg', 1.0);
+        setBoxes(prev => ({
+          ...prev,
+          [boxKey]: {
+            ...prev[boxKey],
+            image: resizedData,
+            imageSize: { width: box.width, height: box.height },
+          }
+        }));
+      }
+    };
+    img.src = box.image;
+  };
+
+  const calculateAspectRatio = (width: number, height: number): string => {
+    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+    const divisor = gcd(width, height);
+    return `${width / divisor}:${height / divisor}`;
   };
 
   const handleDragEnter = (e: React.DragEvent, boxKey: keyof BoxState) => {
@@ -143,7 +175,10 @@ export default function DesignStudioV2() {
   const handleDrop = (e: React.DragEvent, boxKey: keyof BoxState) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Ensure we're dropping on the intended box
     if (dragTarget !== boxKey) return;
+    
     const files = Array.from(e.dataTransfer.files);
     const imageFile = files.find(file => file.type.startsWith('image/'));
     if (imageFile) {
@@ -155,6 +190,7 @@ export default function DesignStudioV2() {
   // Handle Advertisement Number dragging
   const handleAdvMouseDown = (e: React.MouseEvent) => {
     if (!advRef.current) return;
+    
     setIsDragging(true);
     const rect = advRef.current.getBoundingClientRect();
     setStartPos({
@@ -165,16 +201,26 @@ export default function DesignStudioV2() {
 
   const handleAdvMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !canvasRef.current) return;
+
     const canvasRect = canvasRef.current.getBoundingClientRect();
     const scale = Number(canvasRef.current.style.transform.match(/scale\((.*?)\)/)?.[1] || 1);
+    
+    // Calculate new position within canvas bounds
     const newX = (e.clientX - canvasRect.left - startPos.x) / scale;
     const newY = (e.clientY - canvasRect.top - startPos.y) / scale;
+
+    // Get canvas dimensions
     const canvasWidth = 1920;
-    const canvasHeight = 960;
+    const canvasHeight = 900;
+
+    // Get advertisement number dimensions
     const advWidth = advRef.current?.offsetWidth || 0;
     const advHeight = advRef.current?.offsetHeight || 0;
+
+    // Keep within bounds
     const boundedX = Math.max(0, Math.min(newX, canvasWidth - advWidth));
     const boundedY = Math.max(0, Math.min(newY, canvasHeight - advHeight));
+
     setAdvPosition({ x: boundedX, y: boundedY });
   };
 
@@ -182,24 +228,29 @@ export default function DesignStudioV2() {
     setIsDragging(false);
   };
 
+  // Reset advertisement number position
   const handleResetPosition = () => {
     setAdvPosition(defaultAdvPosition);
   };
 
-  // Load Dubai Logos – uses existing images as placeholders until proper V2 images are provided
+  // Load Dubai Logos function - loads specific images to specific boxes
   const handleLoadDubaiLogos = async () => {
-    // TODO: Replace with properly sized images when available:
-    // box1 → 672x384, box2 → 1248x768, box3 → 768x192
+    // Map images to specific boxes:
+    // box1 (640x360) → 640x360 01.jpg
+    // box2 (1280x720) → 1280x720.jpg
+    // box3 (800x180) → 800x180 01.jpg
     const imageMapping = [
       { boxKey: 'box1' as keyof BoxState, imagePath: '/images/640x360 01.jpg' },
       { boxKey: 'box2' as keyof BoxState, imagePath: '/images/1280x720.jpg' },
       { boxKey: 'box3' as keyof BoxState, imagePath: '/images/800x180 01.jpg' }
     ];
 
+    // Load all images in parallel
     const loadPromises = imageMapping.map(async ({ boxKey, imagePath }) => {
       try {
         const img = new window.Image();
         img.crossOrigin = 'anonymous';
+        
         await new Promise<void>((resolve, reject) => {
           img.onload = () => {
             const canvas = document.createElement('canvas');
@@ -214,7 +265,11 @@ export default function DesignStudioV2() {
                 [boxKey]: {
                   ...prev[boxKey],
                   image: imageData,
-                  imageSize: { width: img.width, height: img.height }
+                  imageSize: {
+                    width: img.width,
+                    height: img.height
+                  },
+                  fileName: imagePath.split('/').pop() || 'Dubai Logo',
                 }
               }));
               resolve();
@@ -229,9 +284,11 @@ export default function DesignStudioV2() {
         console.error(`Error loading logo for ${boxKey}:`, error);
       }
     });
+    
     await Promise.all(loadPromises);
   };
 
+  // Initialize advPosition with default position
   useEffect(() => {
     setAdvPosition(defaultAdvPosition);
   }, []);
@@ -250,10 +307,12 @@ export default function DesignStudioV2() {
   }, []);
 
   useEffect(() => {
+    // Add global mouse event listeners
     if (isDragging) {
       document.addEventListener('mousemove', handleAdvMouseMove as any);
       document.addEventListener('mouseup', handleAdvMouseUp);
     }
+
     return () => {
       document.removeEventListener('mousemove', handleAdvMouseMove as any);
       document.removeEventListener('mouseup', handleAdvMouseUp);
@@ -262,11 +321,14 @@ export default function DesignStudioV2() {
 
   const handleCaptureImage = async () => {
     if (!canvasRef.current || !dsImageName.trim()) return;
+
     try {
+      // Reset scale and temporarily hide borders and effects
       const container = canvasRef.current;
       const originalTransform = container.style.transform;
       container.style.transform = 'scale(1)';
 
+      // Find all box elements and temporarily modify their styles
       const boxes = container.querySelectorAll('.box-border');
       boxes.forEach((box: Element) => {
         if (box instanceof HTMLElement) {
@@ -275,6 +337,7 @@ export default function DesignStudioV2() {
         }
       });
 
+      // Hide controls during capture
       const controls = container.querySelector('.controls-overlay');
       if (controls instanceof HTMLElement) {
         controls.style.display = 'none';
@@ -282,7 +345,7 @@ export default function DesignStudioV2() {
 
       const canvas = await html2canvas(container, {
         width: 1920,
-        height: 960,
+        height: 900,
         scale: 1,
         backgroundColor: '#000000',
         logging: false,
@@ -290,6 +353,7 @@ export default function DesignStudioV2() {
         allowTaint: true,
       });
 
+      // Restore original styles
       container.style.transform = originalTransform;
       boxes.forEach((box: Element) => {
         if (box instanceof HTMLElement) {
@@ -297,95 +361,162 @@ export default function DesignStudioV2() {
           box.classList.remove('capturing');
         }
       });
+      
+      // Restore controls visibility
       if (controls instanceof HTMLElement) {
         controls.style.display = '';
       }
 
+      // Convert to high-quality JPG
       const image = canvas.toDataURL('image/jpeg', 1.0);
+      
+      // Create download link
       const link = document.createElement('a');
-      link.download = `${dsImageName}_V2.jpg`;
+      const filename = `${dsImageName}.jpg`;
+      
+      link.download = filename;
       link.href = image;
       link.click();
 
+      // Show thumbs up confirmation
       setShowThumbsUp(true);
       setTimeout(() => setShowThumbsUp(false), 1500);
+
     } catch (error) {
       console.error('Error capturing image:', error);
       alert('Failed to capture image. Please try again.');
     }
   };
 
-  const renderBox = (boxKey: keyof BoxState, box: Box) => (
-    <div
-      className={`box-border group ${dragTarget === boxKey ? 'ring-2 ring-blue-500' : ''}`}
-      style={{
-        width: `${box.width}px`,
-        height: `${box.height}px`,
-        background: '#fff',
-        border: '2px solid #ccc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        overflow: 'hidden',
-        transition: 'all 0.3s ease-in-out',
-        position: 'relative',
-      }}
-      onClick={() => handleBoxClick(boxKey)}
-      onDragEnter={(e) => handleDragEnter(e, boxKey)}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={(e) => handleDrop(e, boxKey)}
-    >
-      {box.image ? (
-        <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-300">
-          <Image
-            src={box.image}
-            alt={`Box ${boxKey}`}
-            fill
-            className="object-contain"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/30 group-hover:via-black/20 group-hover:to-black/30 transition-all duration-300 capturing:opacity-0" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 capturing:hidden">
-            <div className="bg-white/90 px-4 py-2 rounded-lg shadow-lg transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-              <span className="text-gray-800 font-semibold">Click to Change</span>
+  const renderBox = (boxKey: keyof BoxState, box: Box) => {
+    const hasMismatch = box.image && box.imageSize && (box.imageSize.width !== box.width || box.imageSize.height !== box.height);
+    const pixelDiffW = box.imageSize ? Math.abs(box.imageSize.width - box.width) : 0;
+    const pixelDiffH = box.imageSize ? Math.abs(box.imageSize.height - box.height) : 0;
+    const arMatch = box.imageSize ? aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) : true;
+    const arPercent = box.imageSize ? (() => {
+      const r1 = box.imageSize.width / box.imageSize.height;
+      const r2 = box.width / box.height;
+      const avg = (r1 + r2) / 2;
+      return avg === 0 ? 0 : ((Math.abs(r1 - r2) / avg) * 100).toFixed(1);
+    })() : '0';
+
+    return (
+      <div
+        className={`box-border group ${dragTarget === boxKey ? 'ring-2 ring-blue-500' : ''}`}
+        style={{
+          width: `${box.width}px`,
+          height: `${box.height}px`,
+          background: '#fff',
+          border: '2px solid #ccc',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          overflow: 'hidden',
+          transition: 'all 0.3s ease-in-out',
+          position: 'relative',
+        }}
+        onClick={() => handleBoxClick(boxKey)}
+        onDragEnter={(e) => handleDragEnter(e, boxKey)}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, boxKey)}
+      >
+        {box.image ? (
+          <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-300">
+            <Image
+              src={box.image}
+              alt={`Box ${boxKey}`}
+              fill
+              className="object-contain"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/30 group-hover:via-black/20 group-hover:to-black/30 transition-all duration-300 capturing:opacity-0" />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 capturing:hidden">
+              <div className="bg-white/95 px-5 py-3 rounded-xl shadow-xl transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300 text-center max-w-[90%]">
+                {box.fileName && (
+                  <div className="text-gray-500 text-xs mb-1 truncate" title={box.fileName}>{box.fileName}</div>
+                )}
+                <div className="text-gray-600 text-xs mb-1">
+                  Image: {box.imageSize ? `${box.imageSize.width}×${box.imageSize.height}` : 'N/A'} · Box: {box.width}×{box.height}
+                </div>
+                <span className="text-gray-800 font-semibold text-sm">Click to Change</span>
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="text-center text-gray-500 group-hover:text-gray-700 transition-colors duration-300 w-full">
-            <div className="font-bold text-base mb-2" style={{marginTop: 8}}>
-              Box {boxKey.slice(-1)}
+        ) : (
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="text-center text-gray-500 group-hover:text-gray-700 transition-colors duration-300 w-full">
+              <div className="font-bold text-base mb-2" style={{marginTop: 8}}>
+                Box {boxKey.slice(-1)}
+              </div>
+              <div className="text-xl text-gray-400 mb-1 font-semibold">
+                {box.width} × {box.height}
+              </div>
+              <div className="font-bold text-2xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
+                Drag & Drop
+              </div>
+              <div className="text-lg transform group-hover:scale-105 transition-transform duration-300">
+                or Click to Import
+              </div>
+              <div className="text-sm mt-4 transform group-hover:scale-105 transition-transform duration-300">
+                [Placeholder]
+              </div>
             </div>
-            <div className="text-xl text-gray-400 mb-1 font-semibold">
-              {box.width} × {box.height}
-            </div>
-            <div className="font-bold text-2xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
-              Drag & Drop
-            </div>
-            <div className="text-lg transform group-hover:scale-105 transition-transform duration-300">
-              or Click to Import
-            </div>
-            <div className="text-sm mt-4 transform group-hover:scale-105 transition-transform duration-300">
-              [Placeholder]
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/0 via-blue-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-blue-500/5 group-hover:to-blue-500/10 transition-all duration-300 capturing:opacity-0" />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/0 via-blue-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-blue-500/5 group-hover:to-blue-500/10 transition-all duration-300 capturing:opacity-0" />
-        </div>
-      )}
-      {/* Persistent aspect ratio warning badge – hidden during capture */}
-      {box.image && box.imageSize && !aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height) && (
-        <div className="aspect-ratio-badge absolute top-2 right-2 z-10 bg-red-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 pointer-events-none">
-          <svg width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-          Aspect Ratio Mismatch
-        </div>
-      )}
-      <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-300 capturing:opacity-0" />
-    </div>
-  );
+        )}
+        {/* Persistent aspect ratio warning badge */}
+        {box.image && box.imageSize && !arMatch && (
+          <div className="aspect-ratio-badge absolute top-2 right-2 z-10 bg-red-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 pointer-events-none">
+            <svg width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            Aspect Ratio Mismatch
+          </div>
+        )}
+        {/* Fit to Screen button */}
+        {hasMismatch && (
+          <button
+            className="fit-to-screen-btn absolute top-2 left-2 z-10 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 opacity-100 transition-opacity duration-300"
+            onClick={(e) => { e.stopPropagation(); handleFitToScreen(boxKey); }}
+            title="Resize image to match box dimensions"
+          >
+            <svg width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+            Fit to Screen
+          </button>
+        )}
+        {/* Resolution info inside box at bottom – hidden during capture */}
+        {box.image && box.imageSize && (
+          <div
+            className="image-size-info absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
+            style={{
+              fontSize: 13,
+              color: '#eee',
+              backgroundColor: 'rgba(0, 0, 0, 0.55)',
+              padding: '4px 10px',
+              lineHeight: 1.6,
+            }}
+          >
+            <span>Box: {box.width}×{box.height} · Image: {box.imageSize.width}×{box.imageSize.height}</span>
+            {hasMismatch && (
+              <>
+                <span style={{ color: '#fbbf24', marginLeft: 8 }}>Δ {pixelDiffW}×{pixelDiffH}px</span>
+                <span style={{ color: arMatch ? '#4ade80' : '#f87171', marginLeft: 8 }}>
+                  AR {arPercent}% {arMatch ? '✓' : '✗'} (tolerance 3%)
+                </span>
+              </>
+            )}
+            {!hasMismatch && (
+              <span style={{ color: '#4ade80', marginLeft: 8 }}>✓ Perfect match</span>
+            )}
+          </div>
+        )}
+        <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-300 capturing:opacity-0" />
+      </div>
+    );
+  };
 
   return (
     <main className="min-h-screen bg-gray-900 text-black overflow-hidden">
@@ -424,6 +555,12 @@ export default function DesignStudioV2() {
         .capturing .aspect-ratio-badge {
           display: none !important;
         }
+        .capturing .fit-to-screen-btn {
+          display: none !important;
+        }
+        .capturing .image-size-info {
+          display: none !important;
+        }
         .position-guide {
           pointer-events: none;
           border: 2px dashed;
@@ -446,6 +583,7 @@ export default function DesignStudioV2() {
           filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 2px #00ffea);
           font-weight: bold;
           color: #fff700;
+          /* graffiti paint look */
           border-radius: 8px;
         }
       `}</style>
@@ -456,14 +594,14 @@ export default function DesignStudioV2() {
           style={{ 
             transform: `scale(${scale})`, 
             transformOrigin: 'top center',
-            marginBottom: '-2rem'
+            marginBottom: '-2rem' // Add negative margin to pull footer closer
           }}
         >
-          {/* DS V2 Canvas background */}
+          {/* DS Canvas - Positioned behind other elements */}
           <div 
             style={{
               width: '1920px',
-              height: '960px',
+              height: '900px',
               backgroundColor: '#000000',
               position: 'absolute',
               top: '0',
@@ -472,7 +610,7 @@ export default function DesignStudioV2() {
             }}
           />
           
-          {/* Content container */}
+          {/* Content container with higher z-index */}
           <div className="relative z-10">
             <div className="flex">
               {renderBox('box2', boxes.box2)}
@@ -483,6 +621,7 @@ export default function DesignStudioV2() {
             {/* Draggable Advertisement Number */}
             {advNumber && (
               <>
+                {/* Display version (visible during normal use) */}
                 <div 
                   ref={advRef}
                   className={`adv-number absolute z-30 font-semibold text-lg ${isDragging ? 'dragging' : ''} capturing:hidden`}
@@ -498,6 +637,7 @@ export default function DesignStudioV2() {
                   {advNumber}
                 </div>
                 
+                {/* Capture version (only visible during capture) */}
                 <div 
                   className="absolute z-30 font-semibold text-lg hidden capturing:block"
                   style={{ 
@@ -526,7 +666,7 @@ export default function DesignStudioV2() {
               <div className="flex flex-col gap-2">
                 <button
                   onClick={handleLoadDubaiLogos}
-                  title="Load Dubai logos into all boxes"
+                  title="Load Dubai Municipality logos into all boxes. 640x360 image goes to Box 1, 1280x720 to Box 2, 800x180 to Box 3"
                   className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 w-full justify-center"
                 >
                   <svg width={18} height={18} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -535,7 +675,7 @@ export default function DesignStudioV2() {
                   Load Dubai Logos
                 </button>
               </div>
-              {/* Advertisement No. and Text Color */}
+              {/* Advertisement No. and Text Color Grouped Vertically */}
               <div className="flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Advertisement No.
@@ -576,8 +716,9 @@ export default function DesignStudioV2() {
                   </div>
                 </div>
               </div>
+              {/* Divider */}
               <div className="border-t border-gray-300 my-2" />
-              {/* DS Image Name */}
+              {/* DS Image Name Below Divider */}
               <div className="flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   DS Image Name
@@ -590,7 +731,7 @@ export default function DesignStudioV2() {
                   className="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              {/* Capture Button */}
+              {/* Capture Button remains below */}
               <button
                 onClick={handleCaptureImage}
                 className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 w-full justify-center relative overflow-visible"
@@ -625,4 +766,4 @@ export default function DesignStudioV2() {
       </div>
     </main>
   );
-}
+} 

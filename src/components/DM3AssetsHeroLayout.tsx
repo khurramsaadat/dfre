@@ -141,6 +141,10 @@ export default function DM3AssetsHeroLayout() {
         arBadges.forEach((badge: Element) => {
           (badge as HTMLElement).style.display = 'none';
         });
+        const fitBtns = layoutRef.current.querySelectorAll('.fit-to-screen-btn');
+        fitBtns.forEach((btn: Element) => {
+          (btn as HTMLElement).style.display = 'none';
+        });
 
         const html2canvas = (await import('html2canvas')).default;
         const canvas = await html2canvas(layoutRef.current, {
@@ -178,6 +182,9 @@ export default function DM3AssetsHeroLayout() {
         });
         arBadges.forEach((badge: Element) => {
           (badge as HTMLElement).style.display = '';
+        });
+        fitBtns.forEach((btn: Element) => {
+          (btn as HTMLElement).style.display = '';
         });
 
         // Download with prefixed filename
@@ -220,6 +227,30 @@ export default function DM3AssetsHeroLayout() {
     const r2 = aspectRatioDecimal(w2, h2);
     const avg = (r1 + r2) / 2;
     return avg === 0 ? true : Math.abs(r1 - r2) / avg <= tolerancePercent;
+  };
+
+  const handleFitToScreen = (index: number) => {
+    const box = boxes[index];
+    if (!box.image) return;
+    const img = new window.Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = box.width;
+      canvas.height = box.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, box.width, box.height);
+        const resizedData = canvas.toDataURL('image/jpeg', 1.0);
+        const newBoxes = [...boxes];
+        newBoxes[index] = {
+          ...newBoxes[index],
+          image: resizedData,
+          imageSize: { width: box.width, height: box.height },
+        };
+        setBoxes(newBoxes);
+      }
+    };
+    img.src = box.image;
   };
 
   // Load Dubai Logos function - loads specific images to specific boxes
@@ -380,10 +411,29 @@ export default function DM3AssetsHeroLayout() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/0 group-hover:from-black/30 group-hover:via-black/20 group-hover:to-black/30 transition-all duration-300" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="bg-white/90 px-4 py-2 rounded-lg shadow-lg transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                      <span className="text-gray-800 font-semibold">Click to Change</span>
+                    <div className="bg-white/95 px-5 py-3 rounded-xl shadow-xl transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300 text-center max-w-[90%]">
+                      {box.fileName && (
+                        <div className="text-gray-500 text-xs mb-1 truncate" title={box.fileName}>{box.fileName}</div>
+                      )}
+                      <div className="text-gray-600 text-xs mb-1">
+                        Image: {box.imageSize ? `${box.imageSize.width}×${box.imageSize.height}` : 'N/A'} · Box: {box.width}×{box.height}
+                      </div>
+                      <span className="text-gray-800 font-semibold text-sm">Click to Change</span>
                     </div>
                   </div>
+                  {/* Fit to Screen button */}
+                  {box.imageSize && (box.imageSize.width !== box.width || box.imageSize.height !== box.height) && (
+                    <button
+                      className="fit-to-screen-btn absolute top-2 left-2 z-10 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 opacity-100 transition-opacity duration-300"
+                      onClick={(e) => { e.stopPropagation(); handleFitToScreen(index); }}
+                      title="Resize image to match box dimensions"
+                    >
+                      <svg width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      </svg>
+                      Fit to Screen
+                    </button>
+                  )}
                 </div>
               ) : (
                 <div className="relative w-full h-full flex items-center justify-center">

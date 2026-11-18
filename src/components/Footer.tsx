@@ -64,13 +64,13 @@ const Footer = () => {
             <h3 className="text-sm font-bold mb-4 text-white">PUBLISH</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/design-studio" className={footerLinkClasses('/design-studio')} style={{ display: 'inline-flex' }}>
-                  <PencilIcon className="w-4 h-4 mr-1" aria-hidden="true" /> Design Studio
+                <Link href="/pole-1-7" className={footerLinkClasses('/pole-1-7')} style={{ display: 'inline-flex' }}>
+                  <PencilIcon className="w-4 h-4 mr-1" aria-hidden="true" /> Pole 1-7
                 </Link>
               </li>
               <li>
-                <Link href="/design-studio-v2" className={footerLinkClasses('/design-studio-v2')} style={{ display: 'inline-flex' }}>
-                  <DocumentDuplicateIcon className="w-4 h-4 mr-1" aria-hidden="true" /> Design Studio V2
+                <Link href="/pole-8-12" className={footerLinkClasses('/pole-8-12')} style={{ display: 'inline-flex' }}>
+                  <DocumentDuplicateIcon className="w-4 h-4 mr-1" aria-hidden="true" /> Pole 8-12
                 </Link>
               </li>
             </ul>
