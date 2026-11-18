@@ -68,6 +68,9 @@ export default function DesignStudioV2() {
   const [startPos, setStartPos] = useState<Position>({ x: 0, y: 0 });
   const advRef = useRef<HTMLDivElement>(null);
   const [showThumbsUp, setShowThumbsUp] = useState(false);
+  const [showInfoBars, setShowInfoBars] = useState(true);
+  const [originalImages, setOriginalImages] = useState<Record<string, { image: string; imageSize: { width: number; height: number } }>>({});
+  const [fittedBoxes, setFittedBoxes] = useState<Record<string, boolean>>({});
 
   // Calculate Box3's position in the canvas
   const box3Position = {
@@ -128,7 +131,25 @@ export default function DesignStudioV2() {
 
   const handleFitToScreen = (boxKey: keyof BoxState) => {
     const box = boxes[boxKey];
-    if (!box.image) return;
+    if (!box.image || !box.imageSize) return;
+
+    if (fittedBoxes[boxKey]) {
+      const orig = originalImages[boxKey];
+      if (orig) {
+        setBoxes(prev => ({
+          ...prev,
+          [boxKey]: { ...prev[boxKey], image: orig.image, imageSize: orig.imageSize }
+        }));
+        setFittedBoxes(prev => ({ ...prev, [boxKey]: false }));
+      }
+      return;
+    }
+
+    setOriginalImages(prev => ({
+      ...prev,
+      [boxKey]: { image: box.image!, imageSize: { ...box.imageSize! } }
+    }));
+
     const img = new window.Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -146,6 +167,7 @@ export default function DesignStudioV2() {
             imageSize: { width: box.width, height: box.height },
           }
         }));
+        setFittedBoxes(prev => ({ ...prev, [boxKey]: true }));
       }
     };
     img.src = box.image;
@@ -436,21 +458,25 @@ export default function DesignStudioV2() {
             Aspect Ratio Mismatch
           </div>
         )}
-        {/* Fit to Screen button */}
-        {hasMismatch && (
+        {/* Fit to Screen / Actual Size toggle button */}
+        {(hasMismatch || fittedBoxes[boxKey]) && (
           <button
-            className="fit-to-screen-btn absolute top-2 left-2 z-10 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 opacity-100 transition-opacity duration-300"
+            className={`fit-to-screen-btn absolute top-2 left-2 z-10 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 opacity-100 transition-all duration-300 ${fittedBoxes[boxKey] ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'}`}
             onClick={(e) => { e.stopPropagation(); handleFitToScreen(boxKey); }}
-            title="Resize image to match box dimensions"
+            title={fittedBoxes[boxKey] ? 'Restore original image size' : 'Resize image to match box dimensions'}
           >
             <svg width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              {fittedBoxes[boxKey] ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              )}
             </svg>
-            Fit to Screen
+            {fittedBoxes[boxKey] ? 'Actual Size' : 'Fit to Screen'}
           </button>
         )}
         {/* Resolution info inside box at bottom – hidden during capture */}
-        {box.image && box.imageSize && (
+        {showInfoBars && box.image && box.imageSize && (
           <div
             className="image-size-info absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
             style={{
@@ -632,6 +658,21 @@ export default function DesignStudioV2() {
                   Load Dubai Logos
                 </button>
               </div>
+              {/* Info Bar Toggle */}
+              <button
+                onClick={() => setShowInfoBars(prev => !prev)}
+                title={showInfoBars ? 'Hide resolution info bars' : 'Show resolution info bars'}
+                className={`px-4 py-2 rounded flex items-center gap-2 transition-colors duration-300 w-full justify-center text-sm font-medium ${showInfoBars ? 'bg-gray-700 text-white hover:bg-gray-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-300'}`}
+              >
+                <svg width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  {showInfoBars ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178zM15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  )}
+                </svg>
+                {showInfoBars ? 'Hide Info Bars' : 'Show Info Bars'}
+              </button>
               {/* Advertisement No. and Text Color */}
               <div className="flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
