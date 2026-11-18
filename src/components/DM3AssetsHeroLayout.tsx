@@ -331,9 +331,9 @@ export default function DM3AssetsHeroLayout() {
     }
   };
 
-  // Check if any box has mismatches
+  // Check if any box has aspect ratio mismatches
   const hasMismatches = boxes.some(
-    (b) => b.image && b.imageSize && (b.imageSize.width !== b.width || b.imageSize.height !== b.height)
+    (b) => b.image && b.imageSize && !aspectRatioMatches(b.imageSize.width, b.imageSize.height, b.width, b.height)
   );
 
   const handleToggleReport = () => {
@@ -451,8 +451,8 @@ export default function DM3AssetsHeroLayout() {
                       <span className="text-gray-500 font-medium text-xs tracking-wider uppercase">Click to Change</span>
                     </div>
                   </div>
-                  {/* Fit to Screen / Actual Size toggle button */}
-                  {((box.imageSize && (box.imageSize.width !== box.width || box.imageSize.height !== box.height)) || fittedBoxes[index]) && (
+                  {/* Fit to Screen / Actual Size toggle button – only when aspect ratios differ */}
+                  {((box.imageSize && !aspectRatioMatches(box.imageSize.width, box.imageSize.height, box.width, box.height)) || fittedBoxes[index]) && (
                     <button
                       className={`fit-to-screen-btn absolute top-2 left-2 z-10 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 opacity-100 transition-all duration-300 ${fittedBoxes[index] ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'}`}
                       onClick={(e) => { e.stopPropagation(); handleFitToScreen(index); }}

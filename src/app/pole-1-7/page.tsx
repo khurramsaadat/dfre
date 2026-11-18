@@ -499,8 +499,8 @@ export default function DesignStudio() {
             Aspect Ratio Mismatch
           </div>
         )}
-        {/* Fit to Screen / Actual Size toggle button */}
-        {(hasMismatch || fittedBoxes[boxKey]) && (
+        {/* Fit to Screen / Actual Size toggle button – only when aspect ratios differ */}
+        {((!arMatch && box.image && box.imageSize) || fittedBoxes[boxKey]) && (
           <button
             className={`fit-to-screen-btn absolute top-2 left-2 z-10 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 opacity-100 transition-all duration-300 ${fittedBoxes[boxKey] ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'}`}
             onClick={(e) => { e.stopPropagation(); handleFitToScreen(boxKey); }}
