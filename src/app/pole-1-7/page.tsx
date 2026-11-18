@@ -399,6 +399,8 @@ export default function DesignStudio() {
       const avg = (r1 + r2) / 2;
       return avg === 0 ? 0 : ((Math.abs(r1 - r2) / avg) * 100).toFixed(1);
     })() : '0';
+    const imageRatioDecimal = box.imageSize ? (box.imageSize.width / box.imageSize.height).toFixed(2) : '0.00';
+    const boxRatioDecimal = (box.width / box.height).toFixed(2);
 
     return (
       <div
@@ -434,12 +436,17 @@ export default function DesignStudio() {
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 capturing:hidden">
               <div className="bg-white/95 px-5 py-3 rounded-xl shadow-xl transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300 text-center max-w-[90%]">
                 {box.fileName && (
-                  <div className="text-gray-500 text-xs mb-1 truncate" title={box.fileName}>{box.fileName}</div>
+                  <div className="text-gray-500 text-sm mb-1 truncate" title={box.fileName}>{box.fileName}</div>
                 )}
-                <div className="text-gray-600 text-xs mb-1">
+                <div className="text-gray-600 text-sm mb-1">
                   Image: {box.imageSize ? `${box.imageSize.width}×${box.imageSize.height}` : 'N/A'} · Box: {box.width}×{box.height}
                 </div>
-                <span className="text-gray-800 font-semibold text-sm">Click to Change</span>
+                {box.imageSize && (
+                  <div className="text-gray-600 text-sm mb-1">
+                    Image {calculateAspectRatio(box.imageSize.width, box.imageSize.height)} ({imageRatioDecimal}) · Box {calculateAspectRatio(box.width, box.height)} ({boxRatioDecimal}) · Δ {arPercent}%
+                  </div>
+                )}
+                <span className="text-gray-800 font-semibold text-base">Click to Change</span>
               </div>
             </div>
           </div>
